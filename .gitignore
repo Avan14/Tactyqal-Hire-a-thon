@@ -39,3 +39,9 @@ Thumbs.db
 .idea/
 .vscode/*
 !.vscode/extensions.json
+
+# generated prisma client
+apps/api/src/generated/
+
+# test env holds no secrets
+!apps/api/.env.test

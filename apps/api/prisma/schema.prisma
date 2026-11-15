@@ -1,0 +1,101 @@
+// Blog platform schema. Replaces the WordPress blog that runs separately
+// from the CodeIgniter site. wpId columns keep imports idempotent and let
+// old WordPress IDs be traced after migration.
+
+generator client {
+  provider     = "prisma-client"
+  output       = "../src/generated/prisma"
+  moduleFormat = "cjs"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum PostStatus {
+  DRAFT
+  PUBLISHED
+}
+
+model Author {
+  id        String   @id @default(uuid(7))
+  name      String
+  slug      String   @unique
+  bio       String?
+  wpId      Int?     @unique @map("wp_id")
+  posts     Post[]
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("authors")
+}
+
+model Category {
+  id        String   @id @default(uuid(7))
+  name      String
+  slug      String   @unique
+  wpId      Int?     @unique @map("wp_id")
+  posts     Post[]
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@map("categories")
+}
+
+model Tag {
+  id        String   @id @default(uuid(7))
+  name      String
+  slug      String   @unique
+  wpId      Int?     @unique @map("wp_id")
+  posts     Post[]
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@map("tags")
+}
+
+model Post {
+  id               String     @id @default(uuid(7))
+  slug             String     @unique
+  title            String
+  excerpt          String?
+  contentHtml      String     @map("content_html")
+  featuredImageUrl String?    @map("featured_image_url")
+  status           PostStatus @default(DRAFT)
+  publishedAt      DateTime?  @map("published_at")
+  readingMinutes   Int        @default(1) @map("reading_minutes")
+
+  seoTitle       String? @map("seo_title")
+  seoDescription String? @map("seo_description")
+  canonicalUrl   String? @map("canonical_url")
+
+  wpId Int? @unique @map("wp_id")
+
+  authorId   String?    @map("author_id")
+  author     Author?    @relation(fields: [authorId], references: [id], onDelete: SetNull)
+  categories Category[]
+  tags       Tag[]
+
+  // Maintained by Postgres as a generated column (see the init migration).
+  // Never written by the application.
+  searchVector Unsupported("tsvector")? @map("search_vector")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@index([status, publishedAt(sort: Desc)])
+  @@index([authorId])
+  @@index([searchVector], type: Gin)
+  @@map("posts")
+}
+
+model Lead {
+  id        String   @id @default(uuid(7))
+  name      String
+  email     String
+  phone     String?
+  message   String
+  source    String   @default("homepage")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@index([createdAt(sort: Desc)])
+  @@map("leads")
+}
