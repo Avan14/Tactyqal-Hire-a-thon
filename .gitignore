@@ -1,0 +1,41 @@
+# dependencies
+node_modules/
+.pnpm-store/
+
+# builds
+dist/
+build/
+.next/
+out/
+*.tsbuildinfo
+
+# test output
+coverage/
+test-results/
+playwright-report/
+
+# env and secrets
+.env
+.env.*
+!.env.example
+
+# logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+
+# tooling scratch
+.playwright-mcp/
+.turbo/
+.vercel/
+
+# design comp runtime (only the comp markup is a reference)
+docs/design/homepage-comp/vendor/
+docs/design/homepage-comp/support.js
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/*
+!.vscode/extensions.json
