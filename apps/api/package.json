@@ -13,7 +13,7 @@
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\" \"scripts/**/*.ts\"",
     "typecheck": "tsc --noEmit -p tsconfig.json",
     "test": "jest",
-    "test:e2e": "dotenv -e .env.test -- prisma migrate deploy && dotenv -e .env.test -- jest --config ./test/jest-e2e.json --runInBand",
+    "test:e2e": "dotenv -e .env.test -- prisma migrate deploy && dotenv -e .env.test -v NODE_OPTIONS=--experimental-vm-modules -- jest --config ./test/jest-e2e.json --runInBand",
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
     "db:seed": "tsx prisma/seed.ts",
@@ -91,6 +91,9 @@
     "roots": [
       "<rootDir>/src",
       "<rootDir>/scripts"
-    ]
+    ],
+    "moduleNameMapper": {
+      "^(.{1,2}/.*).js$": "$1"
+    }
   }
 }
