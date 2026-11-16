@@ -2,9 +2,10 @@ import { randomUUID } from 'node:crypto';
 import { Module, RequestMethod } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { APP_FILTER, APP_GUARD } from '@nestjs/core';
-import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
+import { ThrottlerModule } from '@nestjs/throttler';
 import { LoggerModule } from 'nestjs-pino';
 import { AdminAuthModule } from './common/admin-token.guard';
+import { ClientIpThrottlerGuard } from './common/client-ip-throttler.guard';
 import { AllExceptionsFilter } from './common/all-exceptions.filter';
 import { LeadsModule } from './leads/leads.module';
 import { PostsModule } from './posts/posts.module';
@@ -56,7 +57,7 @@ import { PrismaModule } from './prisma/prisma.module';
   ],
   controllers: [HealthController],
   providers: [
-    { provide: APP_GUARD, useClass: ThrottlerGuard },
+    { provide: APP_GUARD, useClass: ClientIpThrottlerGuard },
     { provide: APP_FILTER, useClass: AllExceptionsFilter },
   ],
 })

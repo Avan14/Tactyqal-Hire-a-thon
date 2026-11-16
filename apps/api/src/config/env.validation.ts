@@ -46,6 +46,18 @@ class EnvironmentVariables {
   @IsOptional()
   @IsString()
   TRUST_PROXY: string = 'loopback';
+
+  /**
+   * Shared with the web server. When it is set and presented in
+   * X-Internal-Secret, the X-Client-IP header becomes the rate-limit key.
+   * Needed when the web app and the API run on different hosts.
+   */
+  @IsOptional()
+  @IsString()
+  @MinLength(16, {
+    message: 'INTERNAL_API_SECRET must be at least 16 characters',
+  })
+  INTERNAL_API_SECRET?: string;
 }
 
 export function validateEnv(config: Record<string, unknown>) {

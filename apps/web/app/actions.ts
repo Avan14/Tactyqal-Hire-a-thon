@@ -17,11 +17,19 @@ function text(formData: FormData, key: string): string {
   return typeof value === 'string' ? value.trim() : '';
 }
 
-/** Forward the visitor's IP so the API rate-limits per visitor, not per web server. */
+/**
+ * Forward the visitor's IP so the API rate-limits per visitor, not per web
+ * server. With INTERNAL_API_SECRET set (web and API on different hosts), the
+ * API trusts X-Client-IP; locally it trusts X-Forwarded-For from loopback.
+ */
 async function forwardedFor(): Promise<Record<string, string>> {
   const h = await headers();
   const ip = h.get('x-forwarded-for')?.split(',')[0]?.trim() || h.get('x-real-ip');
-  return ip ? { 'X-Forwarded-For': ip } : {};
+  if (!ip) return {};
+  const secret = process.env.INTERNAL_API_SECRET;
+  return secret
+    ? { 'X-Forwarded-For': ip, 'X-Client-IP': ip, 'X-Internal-Secret': secret }
+    : { 'X-Forwarded-For': ip };
 }
 
 function toFormError(err: unknown, values: Record<string, string>): FormState {

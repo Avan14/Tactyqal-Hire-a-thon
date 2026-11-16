@@ -7,8 +7,8 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { createHash, timingSafeEqual } from 'node:crypto';
 import type { Request } from 'express';
+import { digest, matchesDigest } from './secrets';
 
 /**
  * Admin access is a single bearer token from the environment.
@@ -27,11 +27,7 @@ export class AdminAuthService {
   /** True when the request carries the admin token. Never throws. */
   isAdmin(request: Request): boolean {
     const [scheme, token] = (request.headers.authorization ?? '').split(' ');
-    return (
-      scheme === 'Bearer' &&
-      !!token &&
-      timingSafeEqual(digest(token), this.expected)
-    );
+    return scheme === 'Bearer' && matchesDigest(token, this.expected);
   }
 }
 
@@ -54,7 +50,3 @@ export class AdminTokenGuard implements CanActivate {
   exports: [AdminAuthService, AdminTokenGuard],
 })
 export class AdminAuthModule {}
-
-function digest(value: string): Buffer {
-  return createHash('sha256').update(value).digest();
-}
