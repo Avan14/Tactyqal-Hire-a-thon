@@ -2,6 +2,7 @@ import 'server-only';
 import type { ApiErrorBody } from './types';
 
 const API_URL = (process.env.API_URL ?? 'http://localhost:4000/api/v1').replace(/\/$/, '');
+const REQUEST_TIMEOUT_MS = 8_000;
 
 export class ApiError extends Error {
   constructor(
@@ -37,6 +38,8 @@ export async function api<T>(path: string, { body, token, headers, ...init }: Ap
         ...headers,
       },
       body: body === undefined ? undefined : JSON.stringify(body),
+      // A hung API must not hang page renders: fail fast into the error state.
+      signal: init.signal ?? AbortSignal.timeout(REQUEST_TIMEOUT_MS),
     });
   } catch (cause) {
     throw new ApiError(503, 'API_UNREACHABLE', 'The blog service is not reachable right now.', cause);

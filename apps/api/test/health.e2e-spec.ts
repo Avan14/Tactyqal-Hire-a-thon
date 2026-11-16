@@ -28,6 +28,14 @@ describe('Health and error envelope (e2e)', () => {
     expect(res.headers['x-request-id']).toBe('trace-123');
   });
 
+  it('does not rate-limit public reads, which the web server makes for every visitor', async () => {
+    const server = app.getHttpServer();
+    for (let i = 0; i < 130; i++) {
+      await request(server).get('/api/v1/categories').expect(200);
+    }
+    await request(server).get('/api/v1/posts').expect(200);
+  });
+
   it('unknown routes use the standard error envelope', async () => {
     const res = await request(app.getHttpServer())
       .get('/api/v1/nope')
