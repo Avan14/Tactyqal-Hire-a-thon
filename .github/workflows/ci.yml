@@ -1,0 +1,79 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  api:
+    name: API (lint, typecheck, unit + e2e tests, build)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_USER: tactyqal
+          POSTGRES_PASSWORD: tactyqal
+          POSTGRES_DB: tactyqal_test
+        # Same port as docker-compose, so apps/api/.env.test works unchanged.
+        ports:
+          - 5433:5432
+        options: >-
+          --health-cmd "pg_isready -U tactyqal -d tactyqal_test"
+          --health-interval 5s
+          --health-timeout 3s
+          --health-retries 10
+
+    env:
+      # Prisma's config reads DATABASE_URL even for `prisma generate` on install.
+      DATABASE_URL: postgresql://tactyqal:tactyqal@localhost:5433/tactyqal_test
+
+    steps:
+      - uses: actions/checkout@v5
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm --filter api lint
+      - run: pnpm --filter api typecheck
+      - name: Unit tests
+        run: pnpm --filter api test
+      - name: End-to-end tests (real Postgres)
+        run: pnpm --filter api test:e2e
+      - run: pnpm --filter api build
+
+  web:
+    name: Web (lint, typecheck, build)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    env:
+      DATABASE_URL: postgresql://unused:unused@localhost:5432/unused
+      NEXT_TELEMETRY_DISABLED: 1
+
+    steps:
+      - uses: actions/checkout@v5
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm --filter web lint
+      - run: pnpm --filter web typecheck
+      # Partial prerendering builds every route without the API running.
+      - run: pnpm --filter web build
