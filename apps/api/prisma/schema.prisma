@@ -99,3 +99,12 @@ model Lead {
   @@index([createdAt(sort: Desc)])
   @@map("leads")
 }
+
+model Subscriber {
+  id        String   @id @default(uuid(7))
+  email     String   @unique
+  source    String   @default("footer")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@map("subscribers")
+}

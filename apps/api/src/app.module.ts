@@ -8,6 +8,7 @@ import { AdminAuthModule } from './common/admin-token.guard';
 import { AllExceptionsFilter } from './common/all-exceptions.filter';
 import { LeadsModule } from './leads/leads.module';
 import { PostsModule } from './posts/posts.module';
+import { SubscribersModule } from './subscribers/subscribers';
 import { TaxonomyModule } from './taxonomy/taxonomy.module';
 import { validateEnv } from './config/env.validation';
 import { HealthController } from './health/health.controller';
@@ -51,6 +52,7 @@ import { PrismaModule } from './prisma/prisma.module';
     PostsModule,
     TaxonomyModule,
     LeadsModule,
+    SubscribersModule,
   ],
   controllers: [HealthController],
   providers: [
