@@ -4,6 +4,7 @@ import {
   IsInt,
   IsOptional,
   IsString,
+  Matches,
   Max,
   Min,
   MinLength,
@@ -27,6 +28,10 @@ class EnvironmentVariables {
 
   @IsString()
   @MinLength(16, { message: 'ADMIN_API_TOKEN must be at least 16 characters' })
+  @Matches(/^(?!change-me)/, {
+    message:
+      'ADMIN_API_TOKEN is still the .env.example placeholder; set a random value',
+  })
   ADMIN_API_TOKEN!: string;
 
   @IsOptional()
