@@ -47,6 +47,19 @@ export async function getPost(slug: string): Promise<PostDetail | null> {
   }
 }
 
+/** Every published post's slug and last change, for the sitemap. */
+export async function getAllPostEntries(): Promise<{ slug: string; updatedAt: string | null }[]> {
+  'use cache';
+  cacheLife('hours');
+  cacheTag(POSTS_TAG);
+  const entries: { slug: string; updatedAt: string | null }[] = [];
+  for (let page = 1; ; page++) {
+    const { data, meta } = await api<Paginated<PostSummary>>(`/posts?limit=50&page=${page}`);
+    entries.push(...data.map((p) => ({ slug: p.slug, updatedAt: p.publishedAt })));
+    if (page >= meta.totalPages) return entries;
+  }
+}
+
 export async function getAuthors(): Promise<TermWithCount[]> {
   'use cache';
   cacheLife('minutes');
