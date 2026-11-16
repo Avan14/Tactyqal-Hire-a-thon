@@ -16,7 +16,6 @@
     "test:e2e": "dotenv -e .env.test -- prisma migrate deploy && dotenv -e .env.test -v NODE_OPTIONS=--experimental-vm-modules -- jest --config ./test/jest-e2e.json --runInBand",
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
-    "db:seed": "tsx prisma/seed.ts",
     "import:wp": "tsx scripts/import-wordpress.ts",
     "postinstall": "prisma generate"
   },
