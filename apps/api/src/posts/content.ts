@@ -104,9 +104,17 @@ const NAMED_ENTITIES: Record<string, string> = {
   quot: '"',
   apos: "'",
   nbsp: ' ',
+  hellip: '…',
+  ndash: '–',
+  mdash: '—',
+  lsquo: '‘',
+  rsquo: '’',
+  ldquo: '“',
+  rdquo: '”',
 };
 
-function decodeEntities(text: string): string {
+/** Decodes numeric entities and the named entities WordPress emits. */
+export function decodeEntities(text: string): string {
   return text.replace(/&(#x?[0-9a-f]+|[a-z]+);/gi, (match, code: string) => {
     if (code[0] === '#') {
       const n =
