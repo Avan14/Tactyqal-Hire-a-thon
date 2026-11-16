@@ -184,7 +184,6 @@ apps/
   web/        Next.js site: homepage, blog, admin
     content/  homepage copy (single source of truth)
     lib/      API client, cached data access, admin session
-docs/design/  Claude Design comp and the design system it follows
 ```
 
 ## Next steps

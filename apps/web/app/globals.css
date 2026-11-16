@@ -2,9 +2,8 @@
 
 /*
  * Tactyqal design system: neubrutalist, flat colour, hard shadows, 4px rules.
- * Ported from the Claude Design comp (docs/design/homepage-comp/Main.dc.html)
- * and docs/design/design.md. Class names match the comp so the two can be
- * compared side by side.
+ * Ported from the Claude Design comp of the homepage and its design system.
+ * Class names match the comp so the two can be compared side by side.
  */
 
 @theme {

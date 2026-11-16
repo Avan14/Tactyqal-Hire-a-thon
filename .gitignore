@@ -29,9 +29,8 @@ pnpm-debug.log*
 .turbo/
 .vercel/
 
-# design comp runtime (only the comp markup is a reference)
-docs/design/homepage-comp/vendor/
-docs/design/homepage-comp/support.js
+# design source files (kept locally, not published)
+docs/design/
 
 # OS / editor
 .DS_Store
