@@ -1,10 +1,37 @@
-import { INestApplication, VersioningType } from '@nestjs/common';
+import {
+  BadRequestException,
+  INestApplication,
+  PayloadTooLargeException,
+  VersioningType,
+} from '@nestjs/common';
 import type { NestExpressApplication } from '@nestjs/platform-express';
+import type { NextFunction, Request, Response } from 'express';
 import { ConfigService } from '@nestjs/config';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import helmet from 'helmet';
 import { Logger } from 'nestjs-pino';
 import { createValidationPipe } from './common/validation';
+
+export const JSON_BODY_LIMIT = '1mb';
+
+function bodyParserErrors(
+  err: { type?: string } | undefined,
+  _req: Request,
+  _res: Response,
+  next: NextFunction,
+) {
+  if (err?.type === 'entity.parse.failed') {
+    return next(new BadRequestException('Request body is not valid JSON'));
+  }
+  if (err?.type === 'entity.too.large') {
+    return next(
+      new PayloadTooLargeException(
+        `Request body is larger than ${JSON_BODY_LIMIT}`,
+      ),
+    );
+  }
+  next(err);
+}
 
 /**
  * Applies the HTTP pipeline. Shared by main.ts and the e2e tests so tests
@@ -12,12 +39,17 @@ import { createValidationPipe } from './common/validation';
  */
 export function configureApp(app: INestApplication) {
   const config = app.get(ConfigService);
+  const express = app as NestExpressApplication;
 
   app.useLogger(app.get(Logger));
-  (app as NestExpressApplication).set(
-    'trust proxy',
-    config.get<string>('TRUST_PROXY', 'loopback'),
-  );
+  express.set('trust proxy', config.get<string>('TRUST_PROXY', 'loopback'));
+
+  // Post bodies may be up to 500,000 characters (see CreatePostDto), well
+  // past Express's 100 KB default. Registered before init, so Nest skips its
+  // own parser. Parser failures become HTTP errors in the standard shape.
+  express.useBodyParser('json', { limit: JSON_BODY_LIMIT });
+  express.use(bodyParserErrors);
+
   app.use(helmet());
   app.enableCors({
     origin: config
