@@ -3,8 +3,7 @@ import { Suspense } from 'react';
 import { logout } from '@/app/admin/actions';
 import { DeletePostButton } from '@/components/admin/delete-post-button';
 import { PostRowsSkeleton } from '@/components/post-row';
-import { requireAdminToken } from '@/lib/admin-session';
-import { api } from '@/lib/api';
+import { adminApi } from '@/lib/admin-session';
 import { formatDate } from '@/lib/format';
 import type { Paginated, PostSummary } from '@/lib/types';
 
@@ -34,18 +33,26 @@ export default function AdminPostsPage(props: PageProps<'/admin/posts'>) {
 }
 
 async function PostTable({ searchParams }: Pick<PageProps<'/admin/posts'>, 'searchParams'>) {
-  const token = await requireAdminToken();
   const params = await searchParams;
-  const page = Math.max(1, Number(params.page) || 1);
+  const page = Math.min(10_000, Math.max(1, Math.trunc(Number(params.page)) || 1));
   // Admin reads are never cached: they include drafts and must reflect edits at once.
-  const { data: posts, meta } = await api<Paginated<PostSummary>>(`/posts?limit=25&page=${page}`, { token });
+  const { data: posts, meta } = await adminApi<Paginated<PostSummary>>(`/posts?limit=25&page=${page}`);
   const saved = typeof params.saved === 'string' ? params.saved : undefined;
+  // Only link to the public page when the saved post is actually visible there.
+  const savedIsLive = params.live === '1';
 
   return (
     <div className="flex flex-col gap-6">
       {saved && (
         <p role="status" className="small border-4 border-black bg-white p-4">
-          Saved. <Link className="underline" href={`/blog/${saved}`}>View the post</Link>
+          Saved.{' '}
+          {savedIsLive ? (
+            <Link className="underline" href={`/blog/${saved}`}>
+              View the post
+            </Link>
+          ) : (
+            'It is not public yet, so it does not appear on the blog.'
+          )}
         </p>
       )}
       {params.deleted && (
@@ -65,30 +72,35 @@ async function PostTable({ searchParams }: Pick<PageProps<'/admin/posts'>, 'sear
             </tr>
           </thead>
           <tbody>
-            {posts.map((post) => (
-              <tr key={post.id} className="border-b-2 border-black align-top last:border-b-0">
-                <td className="px-4 py-3.5 font-extrabold">{post.title}</td>
-                <td className="px-4 py-3.5">
-                  <span className={`small border-2 border-black px-2 py-1 ${post.status === 'DRAFT' ? 'bg-[#f5f5f5]' : 'bg-[#ff6b35]'}`}>
-                    {post.status === 'DRAFT' ? 'Draft' : 'Published'}
-                  </span>
-                </td>
-                <td className="small px-4 py-3.5">{formatDate(post.publishedAt)}</td>
-                <td className="px-4 py-3">
-                  <div className="flex flex-wrap gap-2">
-                    <Link className="btn btn-secondary btn-sm" href={`/admin/posts/${post.slug}/edit`}>
-                      Edit
-                    </Link>
-                    {post.status === 'PUBLISHED' && (
-                      <Link className="btn btn-secondary btn-sm" href={`/blog/${post.slug}`}>
-                        View
+            {posts.map((post) => {
+              const label = postState(post);
+              return (
+                <tr key={post.id} className="border-b-2 border-black align-top last:border-b-0">
+                  <td className="px-4 py-3.5 font-extrabold">{post.title}</td>
+                  <td className="px-4 py-3.5">
+                    <span
+                      className={`small border-2 border-black px-2 py-1 ${label === 'Published' ? 'bg-[#ff6b35]' : 'bg-[#f5f5f5]'}`}
+                    >
+                      {label}
+                    </span>
+                  </td>
+                  <td className="small px-4 py-3.5">{formatDate(post.publishedAt)}</td>
+                  <td className="px-4 py-3">
+                    <div className="flex flex-wrap gap-2">
+                      <Link className="btn btn-secondary btn-sm" href={`/admin/posts/${post.slug}/edit`}>
+                        Edit
                       </Link>
-                    )}
-                    <DeletePostButton id={post.id} title={post.title} />
-                  </div>
-                </td>
-              </tr>
-            ))}
+                      {label === 'Published' && (
+                        <Link className="btn btn-secondary btn-sm" href={`/blog/${post.slug}`}>
+                          View
+                        </Link>
+                      )}
+                      <DeletePostButton id={post.id} title={post.title} />
+                    </div>
+                  </td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       </div>
@@ -107,4 +119,10 @@ async function PostTable({ searchParams }: Pick<PageProps<'/admin/posts'>, 'sear
       </p>
     </div>
   );
+}
+
+/** Scheduled posts are published with a future date and are not public yet. */
+function postState(post: PostSummary): 'Draft' | 'Scheduled' | 'Published' {
+  if (post.status === 'DRAFT') return 'Draft';
+  return post.publishedAt && Date.parse(post.publishedAt) > Date.now() ? 'Scheduled' : 'Published';
 }

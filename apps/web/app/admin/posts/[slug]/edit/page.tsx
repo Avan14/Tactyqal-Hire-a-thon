@@ -1,8 +1,8 @@
 import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
 import { PostForm } from '@/components/admin/post-form';
-import { requireAdminToken } from '@/lib/admin-session';
-import { api, ApiError } from '@/lib/api';
+import { adminApi } from '@/lib/admin-session';
+import { ApiError } from '@/lib/api';
 import { getAuthors, getCategories } from '@/lib/blog';
 import type { PostDetail } from '@/lib/types';
 
@@ -20,10 +20,9 @@ export default function EditPostPage(props: PageProps<'/admin/posts/[slug]/edit'
 }
 
 async function EditPostForm({ params }: Pick<PageProps<'/admin/posts/[slug]/edit'>, 'params'>) {
-  const token = await requireAdminToken();
   const { slug } = await params;
   // Read with the admin token, uncached, so drafts load and edits are current.
-  const post = await api<PostDetail>(`/posts/${encodeURIComponent(slug)}`, { token }).catch((err: unknown) => {
+  const post = await adminApi<PostDetail>(`/posts/${encodeURIComponent(slug)}`).catch((err: unknown) => {
     if (err instanceof ApiError && err.status === 404) notFound();
     throw err;
   });

@@ -1,12 +1,15 @@
 'use server';
 
 import { updateTag } from 'next/cache';
-import { redirect } from 'next/navigation';
+import { redirect, unstable_rethrow } from 'next/navigation';
 import { api, ApiError } from '@/lib/api';
-import { clearAdminToken, requireAdminToken, setAdminToken } from '@/lib/admin-session';
+import { adminApi, clearAdminToken, setAdminToken } from '@/lib/admin-session';
 import { POSTS_TAG } from '@/lib/blog';
 import type { FieldError, Paginated, PostDetail, PostSummary } from '@/lib/types';
 import type { FormState } from '../actions';
+
+/** Post ids are UUIDs; anything else never reaches the API path. */
+const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 function text(formData: FormData, key: string): string {
   const value = formData.get(key);
@@ -36,11 +39,17 @@ export async function logout() {
   redirect('/admin/login');
 }
 
-function postPayload(formData: FormData) {
-  const optional = (key: string) => text(formData, key) || undefined;
+/**
+ * On create, empty optional fields are left out. On edit they are sent as
+ * null, which the API reads as "clear this field" (an omitted field would
+ * keep its old value, so "No author" or an emptied excerpt did nothing).
+ */
+function postPayload(formData: FormData, isEdit: boolean) {
+  const optional = (key: string) => text(formData, key) || (isEdit ? null : undefined);
   return {
     title: text(formData, 'title'),
-    slug: optional('slug'),
+    // The slug is required once a post exists, so an empty one is left unchanged.
+    slug: text(formData, 'slug') || undefined,
     excerpt: optional('excerpt'),
     contentHtml: text(formData, 'contentHtml'),
     status: text(formData, 'status') || 'DRAFT',
@@ -49,6 +58,10 @@ function postPayload(formData: FormData) {
     seoDescription: optional('seoDescription'),
     categories: formData.getAll('categories').filter((v): v is string => typeof v === 'string'),
   };
+}
+
+function isLive(post: PostDetail): boolean {
+  return post.status === 'PUBLISHED' && !!post.publishedAt && Date.parse(post.publishedAt) <= Date.now();
 }
 
 function toFormState(err: unknown, values: Record<string, string>): FormState {
@@ -70,36 +83,35 @@ function toFormState(err: unknown, values: Record<string, string>): FormState {
 
 /** Creates a post, or updates one when the form carries an id. */
 export async function savePost(_prev: FormState, formData: FormData): Promise<FormState> {
-  const token = await requireAdminToken();
   const id = text(formData, 'id');
-  const payload = postPayload(formData);
+  if (id && !UUID.test(id)) return { status: 'error', message: 'Could not save the post. Please try again.' };
+  const payload = postPayload(formData, !!id);
   const values = Object.fromEntries(
     Object.entries(payload).map(([k, v]) => [k, Array.isArray(v) ? v.join(',') : (v ?? '')]),
   );
 
   let saved: PostDetail;
   try {
-    saved = await api<PostDetail>(id ? `/posts/${id}` : '/posts', {
+    saved = await adminApi<PostDetail>(id ? `/posts/${id}` : '/posts', {
       method: id ? 'PATCH' : 'POST',
-      token,
       body: payload,
     });
   } catch (err) {
+    unstable_rethrow(err); // let the stale-token redirect through
     return toFormState(err, values);
   }
 
   // Read-your-own-writes: public pages show the change on the next request.
   updateTag(POSTS_TAG);
-  redirect(`/admin/posts?saved=${encodeURIComponent(saved.slug)}`);
+  redirect(`/admin/posts?saved=${encodeURIComponent(saved.slug)}${isLive(saved) ? '&live=1' : ''}`);
 }
 
 export async function deletePost(formData: FormData) {
-  const token = await requireAdminToken();
   const id = text(formData, 'id');
+  if (!UUID.test(id)) redirect('/admin/posts');
   try {
-    await api(`/posts/${id}`, { method: 'DELETE', token });
+    await adminApi(`/posts/${id}`, { method: 'DELETE' });
   } catch (err) {
-    if (err instanceof ApiError && err.status === 401) redirect('/admin/login');
     if (!(err instanceof ApiError && err.status === 404)) throw err;
   }
   updateTag(POSTS_TAG);
