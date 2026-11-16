@@ -13,6 +13,7 @@ import 'dotenv/config';
 import { PrismaPg } from '@prisma/adapter-pg';
 import { PrismaClient } from '../src/generated/prisma/client';
 import { MappedPost, MappedTerm, mapWpPost, WpPost } from './wordpress/mapper';
+import { isPastLastPage, planPages } from './wordpress/paging';
 
 interface Options {
   baseUrl: string;
@@ -42,7 +43,8 @@ function parseArgs(argv: string[]): Options {
 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
-async function fetchJson<T>(url: string, attempt = 1): Promise<T> {
+/** GET with retries. Returns null when WordPress says the page is past the last. */
+async function fetchPage<T>(url: string, attempt = 1): Promise<T | null> {
   const res = await fetch(url, {
     headers: {
       Accept: 'application/json',
@@ -53,27 +55,26 @@ async function fetchJson<T>(url: string, attempt = 1): Promise<T> {
     const wait = 1000 * 2 ** attempt;
     console.warn(`  ${res.status} from source, retrying in ${wait}ms`);
     await sleep(wait);
-    return fetchJson<T>(url, attempt + 1);
+    return fetchPage<T>(url, attempt + 1);
   }
   if (!res.ok) {
+    const body: unknown = await res.json().catch(() => null);
+    if (isPastLastPage(res.status, body)) return null;
     throw new Error(`GET ${url} failed with ${res.status} ${res.statusText}`);
   }
   return (await res.json()) as T;
 }
 
 async function* wordpressPosts(opts: Options): AsyncGenerator<WpPost> {
-  let yielded = 0;
-  for (let page = 1; yielded < opts.limit; page++) {
-    const perPage = Math.min(opts.batchSize, opts.limit - yielded);
+  const pages = planPages(opts.limit, opts.batchSize);
+  for (const [i, { page, perPage, take }] of pages.entries()) {
     const url = `${opts.baseUrl}/posts?_embed=author,wp:term,wp:featuredmedia&per_page=${perPage}&page=${page}&orderby=date&order=desc`;
-    console.log(`Fetching page ${page} (${perPage} posts)`);
-    const posts = await fetchJson<WpPost[]>(url);
-    for (const post of posts) {
-      yield post;
-      yielded++;
-    }
+    console.log(`Fetching page ${page} (${take} of ${perPage} posts)`);
+    const posts = await fetchPage<WpPost[]>(url);
+    if (!posts) return; // past the oldest post
+    yield* posts.slice(0, take);
     if (posts.length < perPage) return; // reached the oldest post
-    await sleep(opts.delayMs);
+    if (i < pages.length - 1) await sleep(opts.delayMs);
   }
 }
 
