@@ -48,14 +48,14 @@ export async function getPost(slug: string): Promise<PostDetail | null> {
 }
 
 /** Every published post's slug and last change, for the sitemap. */
-export async function getAllPostEntries(): Promise<{ slug: string; updatedAt: string | null }[]> {
+export async function getAllPostEntries(): Promise<{ slug: string; updatedAt: string }[]> {
   'use cache';
   cacheLife('hours');
   cacheTag(POSTS_TAG);
-  const entries: { slug: string; updatedAt: string | null }[] = [];
+  const entries: { slug: string; updatedAt: string }[] = [];
   for (let page = 1; ; page++) {
     const { data, meta } = await api<Paginated<PostSummary>>(`/posts?limit=50&page=${page}`);
-    entries.push(...data.map((p) => ({ slug: p.slug, updatedAt: p.publishedAt })));
+    entries.push(...data.map((p) => ({ slug: p.slug, updatedAt: p.updatedAt })));
     if (page >= meta.totalPages) return entries;
   }
 }

@@ -34,6 +34,7 @@ const summarySelect = {
   status: true,
   publishedAt: true,
   readingMinutes: true,
+  updatedAt: true,
   author: { select: { name: true, slug: true } },
   categories: taxonomySelect,
   tags: taxonomySelect,
@@ -46,7 +47,6 @@ const detailSelect = {
   seoDescription: true,
   canonicalUrl: true,
   createdAt: true,
-  updatedAt: true,
 } satisfies Prisma.PostSelect;
 
 export type PostSummary = Prisma.PostGetPayload<{

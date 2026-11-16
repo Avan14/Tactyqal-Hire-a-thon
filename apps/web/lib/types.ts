@@ -20,6 +20,7 @@ export interface PostSummary {
   status: PostStatus;
   publishedAt: string | null;
   readingMinutes: number;
+  updatedAt: string;
   author: Term | null;
   categories: Term[];
   tags: Term[];
@@ -31,7 +32,6 @@ export interface PostDetail extends PostSummary {
   seoDescription: string | null;
   canonicalUrl: string | null;
   createdAt: string;
-  updatedAt: string;
 }
 
 export interface Paginated<T> {

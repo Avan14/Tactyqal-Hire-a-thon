@@ -410,6 +410,16 @@ describe('Posts API (e2e)', () => {
   });
 
   describe('input edge cases', () => {
+    it('lists when each post last changed, for the sitemap', async () => {
+      await http()
+        .post('/api/v1/posts')
+        .set(auth)
+        .send(validPost())
+        .expect(201);
+      const res = await http().get('/api/v1/posts?limit=1').expect(200);
+      expect(res.body.data[0].updatedAt).toEqual(expect.any(String));
+    });
+
     it('rejects a whitespace-only title', async () => {
       await http()
         .post('/api/v1/posts')
