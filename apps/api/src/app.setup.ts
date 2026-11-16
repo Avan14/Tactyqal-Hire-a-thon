@@ -1,4 +1,5 @@
 import { INestApplication, VersioningType } from '@nestjs/common';
+import type { NestExpressApplication } from '@nestjs/platform-express';
 import { ConfigService } from '@nestjs/config';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import helmet from 'helmet';
@@ -13,6 +14,10 @@ export function configureApp(app: INestApplication) {
   const config = app.get(ConfigService);
 
   app.useLogger(app.get(Logger));
+  (app as NestExpressApplication).set(
+    'trust proxy',
+    config.get<string>('TRUST_PROXY', 'loopback'),
+  );
   app.use(helmet());
   app.enableCors({
     origin: config

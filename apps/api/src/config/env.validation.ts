@@ -32,6 +32,15 @@ class EnvironmentVariables {
   @IsOptional()
   @IsIn(['fatal', 'error', 'warn', 'info', 'debug', 'trace', 'silent'])
   LOG_LEVEL: string = 'info';
+
+  /**
+   * Express "trust proxy" setting. The web app calls the API server-side and
+   * forwards the visitor's IP in X-Forwarded-For so rate limits stay per
+   * visitor. 'loopback' trusts that header only from the same host.
+   */
+  @IsOptional()
+  @IsString()
+  TRUST_PROXY: string = 'loopback';
 }
 
 export function validateEnv(config: Record<string, unknown>) {
