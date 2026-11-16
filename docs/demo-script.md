@@ -39,7 +39,7 @@ Show `/api/docs`, then the README architecture diagram.
 
 Run `pnpm test` in a terminal (or show a recent run).
 
-> "Seventy-one tests, and the end-to-end suite runs every endpoint against a real Postgres database. Along the way I made calls such as Postgres search over Elasticsearch, and a single admin token instead of user accounts. The trade-offs are written up in the README."
+> "Ninety-eight tests, and the end-to-end suite runs every endpoint against a real Postgres database. Along the way I made calls such as Postgres search over Elasticsearch, and a single admin token instead of user accounts. The trade-offs are written up in the README."
 
 ## 5. Close (3:40–4:00)
 

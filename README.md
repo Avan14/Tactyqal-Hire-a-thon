@@ -69,7 +69,7 @@ flowchart LR
 | **Sanitize HTML on write**, with an allow-list | Imported and admin-written content is stored clean, so readers never get unsafe markup. Tables, lists and YouTube embeds survive. YouTube is moved to the no-cookie domain. | Content written straight into the database bypasses it. All application write paths sanitize. |
 | **Single admin bearer token** for writes | The brief asks for blog CRUD, not user management. The token is compared in constant time, and the web admin keeps it in an httpOnly cookie. | No per-author accounts or audit trail. That is the natural next step (see [Next steps](#next-steps)). |
 | **Cache Components with tag invalidation** | Public pages are prerendered shells with cached data, tagged `posts`. Admin saves call `updateTag('posts')`, so readers see edits on the next request. | Edits made directly through the API, not the admin, show within the `minutes` cache lifetime. |
-| **Public reads unthrottled, writes rate limited** | The web server reads for every visitor from one IP, so a per-IP read limit would throttle the whole site. Leads and subscribers are limited per visitor, using the forwarded IP, which is trusted only from loopback. | Read abuse protection belongs at the edge (CDN or WAF) in production. |
+| **Public reads unthrottled, writes rate limited** | The web server reads for every visitor from one IP, so a per-IP read limit would throttle the whole site. Leads and subscribers are limited per visitor. The web server passes on the visitor's IP, which the API trusts only from loopback or from a caller holding the shared `INTERNAL_API_SECRET`. | Read abuse protection belongs at the edge (CDN or WAF) in production. |
 | **NestJS 11, Prisma 7, TypeScript 5.9** rather than the very newest majors | NestJS 12 is ESM-only and Prisma 8 is still a release candidate. Both break the Jest toolchain today. | One major behind on Nest, deliberately. |
 
 ## Data model
@@ -113,7 +113,7 @@ Base URL: `/api/v1`. Interactive OpenAPI docs are served at `/api/docs`. Every e
 | GET | `/posts` | public / admin | Paginated list. Filters: `category`, `tag`, `author`, `q` (full-text, ranked), `page`, `limit` (max 50). Admins may add `status`. |
 | GET | `/posts/:slug` | public / admin | One post with its HTML body. Drafts and future-dated posts are visible to admins only. |
 | POST | `/posts` | admin | Create. Slug, excerpt and reading time are derived when omitted. |
-| PATCH | `/posts/:id` | admin | Partial update. The slug never changes implicitly, so published URLs stay stable. |
+| PATCH | `/posts/:id` | admin | Partial update. Send `null` to clear an optional field. The slug never changes implicitly, so published URLs stay stable. |
 | DELETE | `/posts/:id` | admin | Delete (204). |
 | GET | `/categories`, `/tags`, `/authors` | public | Terms with published-post counts. |
 | POST | `/leads` | public, rate limited | Consultation request from the homepage. Includes a honeypot. |
@@ -153,8 +153,8 @@ pnpm lint
 
 | Suite | What it covers |
 |---|---|
-| API unit (35 tests) | Slug generation and collisions, the HTML sanitizer (scripts, event handlers, `javascript:` links, iframe hosts, table and embed preservation), reading time, excerpts, and the WordPress mapper (entity decoding, UTC dates, Yoast fields, category clean-up). |
-| API end-to-end (36 tests) | Every endpoint against a real Postgres test database, through the same HTTP pipeline as production: CRUD, pagination, filters, ranked search, draft visibility, 400/401/404/409 paths, rate-limit behaviour, honeypot, idempotent subscriptions. |
+| API unit (46 tests) | Slug generation and collisions, the HTML sanitizer (scripts, event handlers, `javascript:` links, iframe hosts, table and embed preservation), reading time, excerpts, entity decoding, the WordPress mapper (UTC dates, Yoast fields, category clean-up) and importer paging, the health check, and concurrent newsletter sign-ups. |
+| API end-to-end (52 tests) | Every endpoint against a real Postgres test database, through the same HTTP pipeline as production: CRUD, clearing fields with `null`, pagination, filters, ranked search, draft visibility, 400/401/404/409/413 paths, long post bodies, malformed JSON, per-visitor rate limits, honeypot, idempotent subscriptions. |
 | Manual browser pass | Homepage at 375px and 1280px, the contact form with field errors and success (row verified in the database), blog filters and search, a post with a table and a video, the admin create → public page → delete → 404 round trip, and console checks. |
 
 The production build (`pnpm --filter web build`) partially prerenders every content route. It does not need the API to be running.
@@ -166,6 +166,7 @@ GitHub Actions runs all of this on every push and pull request ([`.github/workfl
 - The admin token is compared in constant time, sent only server to server, and stored in the browser as an httpOnly, `SameSite=Strict` cookie scoped to `/admin`.
 - Post HTML is sanitized with an allow-list before storage. External links get `rel="noopener noreferrer"`, and only YouTube iframes survive.
 - `helmet` headers, strict DTO validation, a CORS allow-list and rate limits on public writes are in place. Secrets come from the environment and are validated at boot.
+- Rate limits key on the visitor's IP. When the web app and the API run on different hosts, set the same `INTERNAL_API_SECRET` in both. The API then trusts the `X-Client-IP` header only from a caller that presents it, so the limit cannot be dodged by inventing addresses.
 - Server Actions get Next.js's built-in origin checks.
 
 ## Content notes for the Tactyqal team
