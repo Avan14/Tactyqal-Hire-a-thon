@@ -47,6 +47,13 @@ export async function getPost(slug: string): Promise<PostDetail | null> {
   }
 }
 
+export async function getAuthors(): Promise<TermWithCount[]> {
+  'use cache';
+  cacheLife('minutes');
+  cacheTag(POSTS_TAG);
+  return api<TermWithCount[]>('/authors');
+}
+
 export async function getCategories(): Promise<TermWithCount[]> {
   'use cache';
   cacheLife('minutes');

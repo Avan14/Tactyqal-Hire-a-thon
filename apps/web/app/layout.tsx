@@ -34,7 +34,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: LayoutProps<'/'>) {
   return (
-    <html lang="en" className={hanken.variable}>
+    <html lang="en" className={hanken.variable} data-scroll-behavior="smooth">
       <body>
         <div className="tq">
           <a className="skip-link" href="#main">
