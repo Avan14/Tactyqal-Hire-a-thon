@@ -1,4 +1,5 @@
 import {
+  decodeEntities,
   excerptFrom,
   readingMinutes,
   sanitizePostHtml,
@@ -145,5 +146,19 @@ describe('excerptFrom', () => {
 
   it('returns short text unchanged', () => {
     expect(excerptFrom('<p>Short</p>')).toBe('Short');
+  });
+});
+
+describe('decodeEntities', () => {
+  it('decodes named and numeric entities', () => {
+    expect(decodeEntities('Fish &amp; chips &#8211; &#x2019;s')).toBe(
+      'Fish & chips – ’s',
+    );
+  });
+
+  it('leaves out-of-range code points as written instead of throwing', () => {
+    expect(decodeEntities('a &#99999999; b &#x110000; c')).toBe(
+      'a &#99999999; b &#x110000; c',
+    );
   });
 });

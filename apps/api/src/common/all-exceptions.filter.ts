@@ -27,6 +27,7 @@ const CODE_BY_STATUS: Record<number, string> = {
   413: 'PAYLOAD_TOO_LARGE',
   422: 'UNPROCESSABLE_ENTITY',
   429: 'TOO_MANY_REQUESTS',
+  503: 'SERVICE_UNAVAILABLE',
 };
 
 /**

@@ -11,6 +11,7 @@ import { ApiTags } from '@nestjs/swagger';
 import { Throttle } from '@nestjs/throttler';
 import { Transform } from 'class-transformer';
 import { IsEmail, MaxLength } from 'class-validator';
+import { Prisma } from '../generated/prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 
 export class SubscribeDto {
@@ -31,11 +32,23 @@ export class SubscribersService {
    * same answer, so the endpoint cannot be used to check who is subscribed.
    */
   async subscribe(email: string): Promise<void> {
-    await this.prisma.subscriber.upsert({
-      where: { email },
-      create: { email },
-      update: {},
-    });
+    try {
+      await this.prisma.subscriber.upsert({
+        where: { email },
+        create: { email },
+        update: {},
+      });
+    } catch (err) {
+      // Two simultaneous sign-ups for one email race on the unique index.
+      // The other request stored it, so this one has succeeded too.
+      if (
+        err instanceof Prisma.PrismaClientKnownRequestError &&
+        err.code === 'P2002'
+      ) {
+        return;
+      }
+      throw err;
+    }
   }
 }
 

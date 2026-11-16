@@ -1,4 +1,9 @@
-import { Controller, Get, VERSION_NEUTRAL } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  ServiceUnavailableException,
+  VERSION_NEUTRAL,
+} from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { SkipThrottle } from '@nestjs/throttler';
 import { PrismaService } from '../prisma/prisma.service';
@@ -9,9 +14,18 @@ import { PrismaService } from '../prisma/prisma.service';
 export class HealthController {
   constructor(private readonly prisma: PrismaService) {}
 
+  /** 200 when the API and database are up; 503 when the database is not. */
   @Get()
   async check() {
-    await this.prisma.$queryRaw`SELECT 1`;
+    try {
+      await this.prisma.$queryRaw`SELECT 1`;
+    } catch {
+      throw new ServiceUnavailableException({
+        status: 'error',
+        database: 'down',
+        message: 'The database is not reachable',
+      });
+    }
     return { status: 'ok', database: 'up', time: new Date().toISOString() };
   }
 }

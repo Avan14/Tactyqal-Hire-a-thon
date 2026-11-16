@@ -137,7 +137,10 @@ export function decodeEntities(text: string): string {
         code[1] === 'x' || code[1] === 'X'
           ? parseInt(code.slice(2), 16)
           : parseInt(code.slice(1), 10);
-      return Number.isFinite(n) ? String.fromCodePoint(n) : match;
+      // fromCodePoint throws above U+10FFFF, so leave those as written.
+      return Number.isInteger(n) && n <= 0x10ffff
+        ? String.fromCodePoint(n)
+        : match;
     }
     return NAMED_ENTITIES[code.toLowerCase()] ?? match;
   });
