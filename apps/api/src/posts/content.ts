@@ -85,6 +85,22 @@ const SANITIZE_OPTIONS: sanitizeHtml.IOptions = {
           : attribs,
       };
     },
+    // YouTube's privacy-enhanced domain sets no tracking cookies until the
+    // reader presses play. Embeds load lazily and always carry a title.
+    iframe: (tagName, attribs) => {
+      if (!isYouTubeEmbed(attribs.src)) return { tagName, attribs };
+      const url = new URL(attribs.src);
+      url.hostname = 'www.youtube-nocookie.com';
+      return {
+        tagName,
+        attribs: {
+          ...attribs,
+          src: url.toString(),
+          loading: 'lazy',
+          title: attribs.title || 'Embedded video',
+        },
+      };
+    },
   },
   // Drop iframes whose source is not a YouTube embed, rather than leaving
   // an empty frame behind.

@@ -84,12 +84,20 @@ describe('sanitizePostHtml', () => {
     );
   });
 
-  it('keeps YouTube embeds', () => {
+  it('keeps YouTube embeds, switched to the privacy-enhanced domain', () => {
     const html =
       '<iframe src="https://www.youtube.com/embed/UyUH06CfLbk?start=5" title="Talk" allowfullscreen></iframe>';
     expect(sanitizePostHtml(html)).toContain(
-      'src="https://www.youtube.com/embed/UyUH06CfLbk?start=5"',
+      'src="https://www.youtube-nocookie.com/embed/UyUH06CfLbk?start=5"',
     );
+  });
+
+  it('lazy-loads embeds and gives untitled ones an accessible title', () => {
+    const out = sanitizePostHtml(
+      '<iframe src="https://www.youtube.com/embed/abc"></iframe>',
+    );
+    expect(out).toContain('loading="lazy"');
+    expect(out).toContain('title="Embedded video"');
   });
 
   it('removes iframes from any other host', () => {

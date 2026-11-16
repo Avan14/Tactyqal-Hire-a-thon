@@ -86,7 +86,7 @@ describe('mapWpPost', () => {
   it('sanitizes the body but keeps the YouTube embed', () => {
     const { contentHtml } = mapWpPost(wpPost());
     expect(contentHtml).not.toContain('<script>');
-    expect(contentHtml).toContain('https://www.youtube.com/embed/UyUH06CfLbk');
+    expect(contentHtml).toContain('/embed/UyUH06CfLbk');
   });
 
   it('turns the excerpt into plain text without the read-more marker', () => {
