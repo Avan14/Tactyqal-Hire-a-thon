@@ -130,6 +130,17 @@ describe('Taxonomy and leads (e2e)', () => {
       expect(fields).toEqual(expect.arrayContaining(['email', 'message']));
     });
 
+    it('rejects a whitespace-only name and message', async () => {
+      const res = await http()
+        .post('/api/v1/leads')
+        .send({ ...lead, name: '   ', message: ' \n ' })
+        .expect(400);
+      const fields = res.body.error.details.map(
+        (d: { field: string }) => d.field,
+      );
+      expect(fields).toEqual(expect.arrayContaining(['name', 'message']));
+    });
+
     it('silently drops submissions that fill the hidden honeypot field', async () => {
       await http()
         .post('/api/v1/leads')

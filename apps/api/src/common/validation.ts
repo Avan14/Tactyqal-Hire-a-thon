@@ -3,6 +3,22 @@ import {
   ValidationError,
   ValidationPipe,
 } from '@nestjs/common';
+import { Transform } from 'class-transformer';
+import { ValidateIf } from 'class-validator';
+
+/** Trims strings before validation, so "   " fails @IsNotEmpty. */
+export const Trim = () =>
+  Transform(({ value }: { value: unknown }) =>
+    typeof value === 'string' ? value.trim() : value,
+  );
+
+/**
+ * Optional, but never null. @IsOptional skips validation for null as well as
+ * undefined, which would let a PATCH write null into a required column.
+ * This skips only undefined, so null is validated and rejected.
+ */
+export const OptionalNotNull = () =>
+  ValidateIf((_object, value) => value !== undefined);
 
 export interface FieldError {
   field: string;

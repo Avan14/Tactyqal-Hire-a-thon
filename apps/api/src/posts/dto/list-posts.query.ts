@@ -13,12 +13,15 @@ import { PostStatus } from '../../generated/prisma/enums';
 import { SLUG_PATTERN } from './create-post.dto';
 
 export const MAX_PAGE_SIZE = 50;
+/** Far beyond any real archive; stops offsets overflowing the database. */
+export const MAX_PAGE = 10_000;
 
 export class ListPostsQuery {
   @IsOptional()
   @Type(() => Number)
   @IsInt()
   @Min(1)
+  @Max(MAX_PAGE)
   page: number = 1;
 
   @IsOptional()

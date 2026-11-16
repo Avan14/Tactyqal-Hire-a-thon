@@ -6,8 +6,10 @@ import {
   Matches,
   MaxLength,
 } from 'class-validator';
+import { Trim } from '../common/validation';
 
 export class CreateLeadDto {
+  @Trim()
   @IsString()
   @IsNotEmpty()
   @MaxLength(100)
@@ -25,6 +27,7 @@ export class CreateLeadDto {
   })
   phone?: string;
 
+  @Trim()
   @IsString()
   @IsNotEmpty()
   @MaxLength(2000)

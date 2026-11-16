@@ -10,6 +10,7 @@ import {
   Matches,
   MaxLength,
 } from 'class-validator';
+import { Trim } from '../../common/validation';
 import { PostStatus } from '../../generated/prisma/enums';
 
 export const SLUG_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
@@ -17,6 +18,7 @@ const URL_OPTIONS = { protocols: ['http', 'https'], require_protocol: true };
 
 export class CreatePostDto {
   /** Post title. */
+  @Trim()
   @IsString()
   @IsNotEmpty()
   @MaxLength(200)

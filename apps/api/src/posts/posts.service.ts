@@ -110,8 +110,10 @@ export class PostsService {
         author: relations.authorId
           ? { connect: { id: relations.authorId } }
           : undefined,
-        categories: relations.categoryIds && { connect: relations.categoryIds },
-        tags: relations.tagIds && { connect: relations.tagIds },
+        categories: relations.categoryIds
+          ? { connect: relations.categoryIds }
+          : undefined,
+        tags: relations.tagIds ? { connect: relations.tagIds } : undefined,
       },
       select: detailSelect,
     });
@@ -120,23 +122,30 @@ export class PostsService {
   async update(id: string, dto: UpdatePostDto): Promise<PostDetail> {
     const existing = await this.prisma.post.findUnique({
       where: { id },
-      select: { status: true, publishedAt: true },
+      select: { status: true, publishedAt: true, contentHtml: true },
     });
     if (!existing) throw new NotFoundException(`No post found with id "${id}"`);
 
+    // Optional fields sent as null are cleared (see UpdatePostDto).
     const data: Prisma.PostUpdateInput = {
       title: dto.title?.trim(),
       slug: dto.slug,
-      excerpt: dto.excerpt?.trim(),
       featuredImageUrl: dto.featuredImageUrl,
       seoTitle: dto.seoTitle,
       seoDescription: dto.seoDescription,
       canonicalUrl: dto.canonicalUrl,
     };
 
+    let contentHtml = existing.contentHtml;
     if (dto.contentHtml !== undefined) {
-      data.contentHtml = sanitizePostHtml(dto.contentHtml);
-      data.readingMinutes = readingMinutes(data.contentHtml);
+      contentHtml = sanitizePostHtml(dto.contentHtml);
+      data.contentHtml = contentHtml;
+      data.readingMinutes = readingMinutes(contentHtml);
+    }
+    if (dto.excerpt === null) {
+      data.excerpt = excerptFrom(contentHtml);
+    } else if (dto.excerpt !== undefined) {
+      data.excerpt = dto.excerpt.trim() || excerptFrom(contentHtml);
     }
 
     const status = dto.status ?? existing.status;
@@ -150,11 +159,17 @@ export class PostsService {
     }
 
     const relations = await this.resolveRelations(dto);
-    if (dto.authorSlug !== undefined) {
+    if (dto.authorSlug === null) {
+      data.author = { disconnect: true };
+    } else if (relations.authorId) {
       data.author = { connect: { id: relations.authorId } };
     }
-    if (relations.categoryIds) data.categories = { set: relations.categoryIds };
-    if (relations.tagIds) data.tags = { set: relations.tagIds };
+    if (dto.categories === null) data.categories = { set: [] };
+    else if (relations.categoryIds) {
+      data.categories = { set: relations.categoryIds };
+    }
+    if (dto.tags === null) data.tags = { set: [] };
+    else if (relations.tagIds) data.tags = { set: relations.tagIds };
 
     return this.prisma.post.update({
       where: { id },

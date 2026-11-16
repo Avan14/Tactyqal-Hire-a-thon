@@ -332,6 +332,95 @@ describe('Posts API (e2e)', () => {
         .send({ title: 'x' })
         .expect(400);
     });
+
+    it('clears optional fields sent as null and regenerates the excerpt', async () => {
+      const created = await http()
+        .post('/api/v1/posts')
+        .set(auth)
+        .send(
+          validPost({
+            excerpt: 'Hand-written summary',
+            seoTitle: 'SEO title',
+            seoDescription: 'SEO description',
+          }),
+        )
+        .expect(201);
+
+      const res = await http()
+        .patch(`/api/v1/posts/${created.body.id}`)
+        .set(auth)
+        .send({
+          authorSlug: null,
+          excerpt: null,
+          seoTitle: null,
+          seoDescription: null,
+          categories: null,
+          tags: null,
+        })
+        .expect(200);
+
+      expect(res.body).toMatchObject({
+        author: null,
+        excerpt: 'Why no-code Build without programming skills.',
+        seoTitle: null,
+        seoDescription: null,
+        categories: [],
+        tags: [],
+      });
+    });
+
+    it('accepts null optional fields on create', async () => {
+      const res = await http()
+        .post('/api/v1/posts')
+        .set(auth)
+        .send(
+          validPost({
+            authorSlug: null,
+            excerpt: null,
+            categories: null,
+            tags: null,
+          }),
+        )
+        .expect(201);
+      expect(res.body).toMatchObject({
+        author: null,
+        categories: [],
+        tags: [],
+      });
+    });
+
+    it.each(['title', 'slug', 'contentHtml', 'status'])(
+      'rejects null for the required field %s with 400',
+      async (field) => {
+        const created = await http()
+          .post('/api/v1/posts')
+          .set(auth)
+          .send(validPost())
+          .expect(201);
+        const res = await http()
+          .patch(`/api/v1/posts/${created.body.id}`)
+          .set(auth)
+          .send({ [field]: null })
+          .expect(400);
+        expect(res.body.error.details).toEqual(
+          expect.arrayContaining([expect.objectContaining({ field })]),
+        );
+      },
+    );
+  });
+
+  describe('input edge cases', () => {
+    it('rejects a whitespace-only title', async () => {
+      await http()
+        .post('/api/v1/posts')
+        .set(auth)
+        .send(validPost({ title: '   ' }))
+        .expect(400);
+    });
+
+    it('rejects an absurdly large page number with 400', async () => {
+      await http().get('/api/v1/posts?page=1000000000000000000').expect(400);
+    });
   });
 
   describe('DELETE /api/v1/posts/:id', () => {
