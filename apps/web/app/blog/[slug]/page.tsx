@@ -15,12 +15,14 @@ export async function generateMetadata(props: PageProps<'/blog/[slug]'>): Promis
 
   const description = post.seoDescription ?? post.excerpt ?? undefined;
   return {
-    title: post.title,
+    // SEO titles (imported from Yoast or set in the admin) already carry the
+    // site name, so they skip the "| Tactyqal Labs" template.
+    title: post.seoTitle ? { absolute: post.seoTitle } : post.title,
     description,
     alternates: { canonical: `/blog/${post.slug}` },
     openGraph: {
       type: 'article',
-      title: post.title,
+      title: post.seoTitle ?? post.title,
       description,
       url: `/blog/${post.slug}`,
       publishedTime: post.publishedAt ?? undefined,
