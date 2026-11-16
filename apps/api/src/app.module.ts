@@ -6,7 +6,9 @@ import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { LoggerModule } from 'nestjs-pino';
 import { AdminAuthModule } from './common/admin-token.guard';
 import { AllExceptionsFilter } from './common/all-exceptions.filter';
+import { LeadsModule } from './leads/leads.module';
 import { PostsModule } from './posts/posts.module';
+import { TaxonomyModule } from './taxonomy/taxonomy.module';
 import { validateEnv } from './config/env.validation';
 import { HealthController } from './health/health.controller';
 import { PrismaModule } from './prisma/prisma.module';
@@ -47,6 +49,8 @@ import { PrismaModule } from './prisma/prisma.module';
     PrismaModule,
     AdminAuthModule,
     PostsModule,
+    TaxonomyModule,
+    LeadsModule,
   ],
   controllers: [HealthController],
   providers: [
