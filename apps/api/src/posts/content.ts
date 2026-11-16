@@ -4,12 +4,16 @@ import sanitizeHtml from 'sanitize-html';
 
 const MAX_SLUG_LENGTH = 80;
 const WORDS_PER_MINUTE = 220;
-const YOUTUBE_HOSTS = ['www.youtube.com', 'youtube.com', 'www.youtube-nocookie.com'];
+const YOUTUBE_HOSTS = [
+  'www.youtube.com',
+  'youtube.com',
+  'www.youtube-nocookie.com',
+];
 
 export function slugify(input: string): string {
   const slug = input
     .normalize('NFKD')
-    .replace(/[̀-ͯ]/g, '')
+    .replace(/\p{M}/gu, '') // strip combining accent marks
     .replace(/&/g, ' and ')
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, '-')
@@ -56,7 +60,15 @@ const SANITIZE_OPTIONS: sanitizeHtml.IOptions = {
   allowedAttributes: {
     a: ['href', 'name', 'target', 'rel', 'title'],
     img: ['src', 'alt', 'title', 'width', 'height', 'loading'],
-    iframe: ['src', 'title', 'width', 'height', 'allow', 'allowfullscreen', 'loading'],
+    iframe: [
+      'src',
+      'title',
+      'width',
+      'height',
+      'allow',
+      'allowfullscreen',
+      'loading',
+    ],
     th: ['colspan', 'rowspan', 'scope'],
     td: ['colspan', 'rowspan'],
   },
@@ -68,7 +80,9 @@ const SANITIZE_OPTIONS: sanitizeHtml.IOptions = {
       const external = /^https?:\/\//i.test(attribs.href ?? '');
       return {
         tagName,
-        attribs: external ? { ...attribs, rel: 'noopener noreferrer' } : attribs,
+        attribs: external
+          ? { ...attribs, rel: 'noopener noreferrer' }
+          : attribs,
       };
     },
   },

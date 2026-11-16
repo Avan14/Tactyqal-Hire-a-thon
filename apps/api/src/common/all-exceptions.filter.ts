@@ -71,7 +71,12 @@ export function toErrorResponse(exception: unknown): {
         : typeof payload.message === 'string'
           ? payload.message
           : exception.message;
-    return build(status, CODE_BY_STATUS[status] ?? `HTTP_${status}`, message, payload.details);
+    return build(
+      status,
+      CODE_BY_STATUS[status] ?? `HTTP_${status}`,
+      message,
+      payload.details,
+    );
   }
 
   if (exception instanceof Prisma.PrismaClientKnownRequestError) {
@@ -101,7 +106,12 @@ export function toErrorResponse(exception: unknown): {
   );
 }
 
-function build(status: number, code: string, message: string, details?: unknown) {
+function build(
+  status: number,
+  code: string,
+  message: string,
+  details?: unknown,
+) {
   const body: ErrorBody = { error: { code, message } };
   if (details !== undefined) body.error.details = details;
   return { status, body };

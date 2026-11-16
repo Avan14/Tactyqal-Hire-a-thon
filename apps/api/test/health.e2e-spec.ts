@@ -14,7 +14,9 @@ describe('Health and error envelope (e2e)', () => {
   });
 
   it('GET /api/health reports the database as up', async () => {
-    const res = await request(app.getHttpServer()).get('/api/health').expect(200);
+    const res = await request(app.getHttpServer())
+      .get('/api/health')
+      .expect(200);
     expect(res.body).toMatchObject({ status: 'ok', database: 'up' });
   });
 
@@ -27,7 +29,9 @@ describe('Health and error envelope (e2e)', () => {
   });
 
   it('unknown routes use the standard error envelope', async () => {
-    const res = await request(app.getHttpServer()).get('/api/v1/nope').expect(404);
+    const res = await request(app.getHttpServer())
+      .get('/api/v1/nope')
+      .expect(404);
     expect(res.body.error).toMatchObject({ code: 'NOT_FOUND' });
     expect(typeof res.body.error.requestId).toBe('string');
   });

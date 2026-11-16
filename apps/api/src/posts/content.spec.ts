@@ -8,7 +8,9 @@ import {
 
 describe('slugify', () => {
   it('lowercases and hyphenates words', () => {
-    expect(slugify('How Does Ramp Make Money?')).toBe('how-does-ramp-make-money');
+    expect(slugify('How Does Ramp Make Money?')).toBe(
+      'how-does-ramp-make-money',
+    );
   });
 
   it('spells out ampersands and drops other punctuation', () => {
@@ -39,18 +41,22 @@ describe('slugify', () => {
 
 describe('uniqueSlug', () => {
   it('returns the base slug when it is free', async () => {
-    await expect(uniqueSlug('ideas', async () => false)).resolves.toBe('ideas');
+    await expect(
+      uniqueSlug('ideas', () => Promise.resolve(false)),
+    ).resolves.toBe('ideas');
   });
 
   it('appends the first free numeric suffix on collision', async () => {
     const taken = new Set(['ideas', 'ideas-2']);
-    await expect(uniqueSlug('ideas', async (s) => taken.has(s))).resolves.toBe(
-      'ideas-3',
-    );
+    await expect(
+      uniqueSlug('ideas', (s) => Promise.resolve(taken.has(s))),
+    ).resolves.toBe('ideas-3');
   });
 
   it('falls back to "post" when the base is empty', async () => {
-    await expect(uniqueSlug('', async () => false)).resolves.toBe('post');
+    await expect(uniqueSlug('', () => Promise.resolve(false))).resolves.toBe(
+      'post',
+    );
   });
 });
 
@@ -73,7 +79,9 @@ describe('sanitizePostHtml', () => {
       '<h2>A</h2><h3>B</h3><ul><li>c</li></ul>' +
       '<figure class="wp-block-table"><table><thead><tr><th>h</th></tr></thead>' +
       '<tbody><tr><td>d</td></tr></tbody></table><figcaption>cap</figcaption></figure>';
-    expect(sanitizePostHtml(html)).toBe(html.replace(' class="wp-block-table"', ''));
+    expect(sanitizePostHtml(html)).toBe(
+      html.replace(' class="wp-block-table"', ''),
+    );
   });
 
   it('keeps YouTube embeds', () => {
@@ -91,7 +99,9 @@ describe('sanitizePostHtml', () => {
   });
 
   it('forces external links to open safely', () => {
-    const out = sanitizePostHtml('<a href="https://example.com" target="_blank">e</a>');
+    const out = sanitizePostHtml(
+      '<a href="https://example.com" target="_blank">e</a>',
+    );
     expect(out).toContain('rel="noopener noreferrer"');
   });
 });

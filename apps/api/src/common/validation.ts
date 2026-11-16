@@ -20,15 +20,15 @@ function flatten(errors: ValidationError[], parent = ''): FieldError[] {
 }
 
 /**
- * Strict input validation. Unknown fields are rejected, and query-string
- * values are coerced to the DTO's declared types.
+ * Strict input validation. Unknown fields are rejected. There is no implicit
+ * type conversion, so a number sent where a string belongs is an error rather
+ * than silently stringified; query DTOs convert numbers explicitly with @Type.
  */
 export function createValidationPipe() {
   return new ValidationPipe({
     whitelist: true,
     forbidNonWhitelisted: true,
     transform: true,
-    transformOptions: { enableImplicitConversion: true },
     exceptionFactory: (errors) =>
       new BadRequestException({
         message: 'Validation failed',

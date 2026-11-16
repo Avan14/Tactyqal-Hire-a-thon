@@ -11,7 +11,9 @@ export async function createTestApp(): Promise<INestApplication> {
   if (!process.env.DATABASE_URL?.includes('_test')) {
     throw new Error('e2e tests must run against the test database (.env.test)');
   }
-  const moduleRef = await Test.createTestingModule({ imports: [AppModule] }).compile();
+  const moduleRef = await Test.createTestingModule({
+    imports: [AppModule],
+  }).compile();
   const app = moduleRef.createNestApplication({ bufferLogs: true });
   configureApp(app);
   await app.init();

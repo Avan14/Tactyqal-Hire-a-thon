@@ -4,7 +4,9 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { APP_FILTER, APP_GUARD } from '@nestjs/core';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { LoggerModule } from 'nestjs-pino';
+import { AdminAuthModule } from './common/admin-token.guard';
 import { AllExceptionsFilter } from './common/all-exceptions.filter';
+import { PostsModule } from './posts/posts.module';
 import { validateEnv } from './config/env.validation';
 import { HealthController } from './health/health.controller';
 import { PrismaModule } from './prisma/prisma.module';
@@ -15,7 +17,9 @@ import { PrismaModule } from './prisma/prisma.module';
     LoggerModule.forRootAsync({
       inject: [ConfigService],
       useFactory: (config: ConfigService) => {
-        const pretty = !['production', 'test'].includes(process.env.NODE_ENV ?? '');
+        const pretty = !['production', 'test'].includes(
+          process.env.NODE_ENV ?? '',
+        );
         return {
           // Express 5 path syntax; the library default ('*') triggers a warning.
           forRoutes: [{ path: '{*splat}', method: RequestMethod.ALL }],
@@ -24,7 +28,10 @@ import { PrismaModule } from './prisma/prisma.module';
             // Reuse an upstream request id when present so logs can be correlated.
             genReqId: (req, res) => {
               const incoming = req.headers['x-request-id'];
-              const id = typeof incoming === 'string' && incoming ? incoming : randomUUID();
+              const id =
+                typeof incoming === 'string' && incoming
+                  ? incoming
+                  : randomUUID();
               res.setHeader('x-request-id', id);
               return id;
             },
@@ -38,6 +45,8 @@ import { PrismaModule } from './prisma/prisma.module';
     }),
     ThrottlerModule.forRoot([{ name: 'default', ttl: 60_000, limit: 120 }]),
     PrismaModule,
+    AdminAuthModule,
+    PostsModule,
   ],
   controllers: [HealthController],
   providers: [
