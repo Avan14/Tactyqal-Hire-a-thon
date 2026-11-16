@@ -1,5 +1,7 @@
 # Tactyqal Labs: homepage redesign and blog platform
 
+[![CI](https://github.com/Avan14/Tactyqal-Hire-a-thon/actions/workflows/ci.yml/badge.svg)](https://github.com/Avan14/Tactyqal-Hire-a-thon/actions/workflows/ci.yml)
+
 A submission for the Tactyqal Labs Full Stack Developer Intern hire-a-thon on Devuty.
 
 | Brief | What this repo delivers |
@@ -157,6 +159,8 @@ pnpm lint
 
 The production build (`pnpm --filter web build`) partially prerenders every content route. It does not need the API to be running.
 
+GitHub Actions runs all of this on every push and pull request ([`.github/workflows/ci.yml`](.github/workflows/ci.yml)). The end-to-end suite runs against a Postgres 17 service container, the same version as local development.
+
 ## Security notes
 
 - The admin token is compared in constant time, sent only server to server, and stored in the browser as an httpOnly, `SameSite=Strict` cookie scoped to `/admin`.
@@ -192,4 +196,4 @@ apps/
 - A rich-text editor in the admin, in place of the raw HTML field.
 - Serve imported images from our own storage instead of linking to WordPress uploads.
 - Redirect rules and a cut-over plan for moving `/blog` from WordPress to this service.
-- Deploy: the web app to Vercel, the API and Postgres to a managed host, and a CI pipeline running the test suites.
+- Deploy: the web app to Vercel, and the API and Postgres to a managed host, with deploys gated on CI.
