@@ -32,7 +32,7 @@ So the redesign puts the parent's questions first and removes friction. The back
 
 - **One system, end to end.** The homepage's "Learn from Industry Experts" section, the blog, the contact form and the newsletter form all run on the new API. Nothing on the page is a dead button.
 - **Old URLs keep working.** The importer preserves every WordPress slug, so `/blog/{slug}/` links and their search ranking survive the migration.
-- **The motion carries the story.** The hero pins and shrinks into a student-app postcard, and the 8-week program is a sideways track: one panel per stage, with what happens and which of Tactyqal's free tools supports it. Visitors who prefer reduced motion get a still hero, no smooth scrolling and stacked panels. Phones get the same stacked layout.
+- **The motion carries the story.** The hero pins and shrinks into a student-app postcard, and the 8-week program is a sideways track: one panel per stage, with what happens and which of Tactyqal's free tools supports it. An intro loader (once per browser session, skippable with a click or Escape), a lime custom cursor that labels booking buttons, and a light film grain complete the look. Visitors who prefer reduced motion get none of those, plus a still hero, no smooth scrolling and stacked panels. Touch devices get no cursor, and phones get the stacked panels.
 - **Real content only.** All copy comes from tactyqal.com. Nothing is invented: no customers, quotes, numbers or logos. See [Content notes for the Tactyqal team](#content-notes-for-the-tactyqal-team).
 - **Every state is designed.** Loading skeletons, empty results, API errors with a working retry, form field errors and success messages all use the comp's states.
 

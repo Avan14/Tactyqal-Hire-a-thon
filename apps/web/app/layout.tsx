@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from 'next';
 import { Anton, Barlow_Condensed, Inter } from 'next/font/google';
 import { Suspense } from 'react';
+import { Cursor } from '@/components/motion/cursor';
 import { RouteWatcher } from '@/components/motion/route-watcher';
 import { SmoothScroll } from '@/components/motion/smooth-scroll';
 import { SiteFooter } from '@/components/site-footer';
@@ -30,8 +31,20 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: LayoutProps<'/'>) {
   return (
-    <html lang="en" className={`${inter.variable} ${anton.variable} ${barlow.variable}`}>
+    <html lang="en" suppressHydrationWarning className={`${inter.variable} ${anton.variable} ${barlow.variable}`}>
       <body>
+        {/* Before first paint: repeat visits and reduced-motion visitors never see the intro loader. */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html:
+              "try{if(sessionStorage.getItem('tq-seen')==='1'||matchMedia('(prefers-reduced-motion: reduce)').matches)document.documentElement.dataset.intro='off'}catch(e){}",
+          }}
+        />
+        <noscript>
+          <style>{'.loader{display:none!important}'}</style>
+        </noscript>
+        <div className="grain" aria-hidden="true" />
+        <Cursor />
         <SmoothScroll />
         <Suspense fallback={null}>
           <RouteWatcher />

@@ -1,3 +1,4 @@
+import { IntroLoader } from '@/components/motion/intro-loader';
 import { Contact } from '@/components/home/contact';
 import { Fab } from '@/components/home/fab';
 import { Faq } from '@/components/home/faq';
@@ -48,6 +49,7 @@ export default function HomePage() {
   return (
     <>
       <StructuredData />
+      <IntroLoader />
       <Hero />
       <Statement />
       <StudentApps />

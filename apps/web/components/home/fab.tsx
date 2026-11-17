@@ -22,7 +22,7 @@ export function Fab() {
   }, []);
   return (
     <div className="fab" ref={ref}>
-      <Link className="pill" href="/#contact" onClick={(e) => { e.preventDefault(); scrollToTarget('#contact'); }}>
+      <Link className="pill" data-cursor="BOOK" href="/#contact" onClick={(e) => { e.preventDefault(); scrollToTarget('#contact'); }}>
         Book a free consultation →
       </Link>
     </div>

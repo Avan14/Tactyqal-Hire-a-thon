@@ -131,7 +131,7 @@ export function SiteHeader() {
           <span className="roll"><span data-t={primary[2].label}>{primary[2].label}</span></span>
         </Link>
         <div className="right">
-          <Link className="pill" href="/#contact" onClick={go('/#contact')}>
+          <Link className="pill" data-cursor="BOOK" href="/#contact" onClick={go('/#contact')}>
             Book a free call
           </Link>
           <button type="button" onClick={() => setOpen((o) => !o)} aria-expanded={open} aria-controls="site-menu">

@@ -46,7 +46,7 @@ export function PriceCard() {
         ))}
       </ul>
       <p className="note"><b>{pricing.notes[0]}.</b></p>
-      <Link className="bigbtn" href="/#contact">Enroll now →</Link>
+      <Link className="bigbtn" data-cursor="BOOK" href="/#contact">Enroll now →</Link>
       <Link className="text-center font-semibold underline underline-offset-4" href="/#contact">Or book a free consultation first</Link>
     </div>
   );

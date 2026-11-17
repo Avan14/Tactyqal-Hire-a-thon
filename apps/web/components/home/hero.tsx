@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { useEffect, useRef } from 'react';
 import { hero, program, studentApps } from '@/content/site';
+import { afterIntro } from '@/lib/intro';
 import { gsap, isPhone, prefersReducedMotion, vh, vw } from '@/lib/motion';
 import { Pops } from '../motion/pops';
 import { HEADER_EVENT } from '../motion/route-watcher';
@@ -52,6 +53,7 @@ export function Hero() {
     };
     setVars();
 
+    let cancelIntroWait = () => {};
     const ctx = gsap.context(() => {
       const scene = el.querySelector<HTMLElement>('.scene')!;
       const frame = el.querySelector<HTMLElement>('.frame')!;
@@ -67,13 +69,15 @@ export function Hero() {
       gsap.set('.names .nm-r', { x: vw(70) });
       gsap.set('.chapters .ln > span', { yPercent: 110 });
       if (!reduce) {
-        gsap.timeline()
+        const entrance = gsap.timeline({ paused: true })
           .fromTo('#zin', { y: vh(60), rotate: 10 }, { y: 0, rotate: 0, duration: 1.6, ease: 'expo.out' }, 0.1)
           .fromTo('.htitle .chi', { yPercent: 110 }, { yPercent: 0, duration: 1.2, ease: 'expo.out', stagger: 0.05 }, 0.15)
           .fromTo('.htitle .tagline', { opacity: 0 }, { opacity: 1, duration: 0.6 }, 0.7)
           .fromTo('.hbook', { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.7, ease: 'expo.out' }, 0.8)
           .fromTo('.hcta', { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.8, ease: 'expo.out' }, 0.85)
           .fromTo('.cue', { opacity: 0 }, { opacity: 1, duration: 0.6 }, 1.3);
+        // The loader plays first on a fresh visit; the entrance starts as it lifts.
+        cancelIntroWait = afterIntro(() => { entrance.play(); });
       } else {
         gsap.set(['.htitle .tagline', '.hbook', '.hcta'], { opacity: 1 });
       }
@@ -116,7 +120,10 @@ export function Hero() {
         return () => removeEventListener('mousemove', onMove);
       }
     }, el);
-    return () => ctx.revert();
+    return () => {
+      cancelIntroWait();
+      ctx.revert();
+    };
   }, []);
 
   return (
@@ -186,7 +193,7 @@ export function Hero() {
           </div>
           <p>{hero.facts[1].value}. {hero.facts[2].value}.</p>
         </div>
-        <Link className="ghost-link hbook" href="/#contact" onClick={(e) => { e.preventDefault(); scrollToTarget('#contact'); }}>
+        <Link className="ghost-link hbook" data-cursor="BOOK" href="/#contact" onClick={(e) => { e.preventDefault(); scrollToTarget('#contact'); }}>
           <i /><span>Book a free call</span><i />
         </Link>
         <div className="cue" aria-hidden="true"><span>Scroll</span><i /></div>
