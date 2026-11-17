@@ -11,7 +11,7 @@ export function LoginForm() {
   return (
     <form action={action} className="card flex flex-col gap-5">
       {state.message && (
-        <p role="alert" className="small border-4 border-black bg-[#ff6b35] p-4">
+        <p role="alert" className="alert">
           {state.message}
         </p>
       )}

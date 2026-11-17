@@ -44,7 +44,7 @@ async function PostTable({ searchParams }: Pick<PageProps<'/admin/posts'>, 'sear
   return (
     <div className="flex flex-col gap-6">
       {saved && (
-        <p role="status" className="small border-4 border-black bg-white p-4">
+        <p role="status" className="status">
           Saved.{' '}
           {savedIsLive ? (
             <Link className="underline" href={`/blog/${saved}`}>
@@ -56,14 +56,14 @@ async function PostTable({ searchParams }: Pick<PageProps<'/admin/posts'>, 'sear
         </p>
       )}
       {params.deleted && (
-        <p role="status" className="small border-4 border-black bg-white p-4">
+        <p role="status" className="status">
           Post deleted.
         </p>
       )}
       <div className="table-box">
         <table className="w-full min-w-[720px] border-collapse text-[16px]">
           <thead>
-            <tr className="bg-black text-left text-white">
+            <tr className="bg-ink text-left text-lime">
               {['Title', 'Status', 'Published', 'Actions'].map((h) => (
                 <th key={h} scope="col" className="small px-4 py-3.5">
                   {h}
@@ -75,11 +75,11 @@ async function PostTable({ searchParams }: Pick<PageProps<'/admin/posts'>, 'sear
             {posts.map((post) => {
               const label = postState(post);
               return (
-                <tr key={post.id} className="border-b-2 border-black align-top last:border-b-0">
-                  <td className="px-4 py-3.5 font-extrabold">{post.title}</td>
+                <tr key={post.id} className="border-b border-ink/15 align-top last:border-b-0">
+                  <td className="px-4 py-3.5 font-semibold">{post.title}</td>
                   <td className="px-4 py-3.5">
                     <span
-                      className={`small border-2 border-black px-2 py-1 ${label === 'Published' ? 'bg-[#ff6b35]' : 'bg-[#f5f5f5]'}`}
+                      className={`badge ${label === 'Published' ? '' : 'bg-cream'}`}
                     >
                       {label}
                     </span>

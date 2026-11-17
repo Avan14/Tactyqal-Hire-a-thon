@@ -35,7 +35,7 @@ export async function generateMetadata(props: PageProps<'/blog/[slug]'>): Promis
 
 export default function BlogPostPage(props: PageProps<'/blog/[slug]'>) {
   return (
-    <article className="wrap flex flex-col gap-10 py-[clamp(48px,6cqi,96px)]">
+    <article className="wrap page flex flex-col gap-10 pb-[12vh]" data-hdr="dark">
       <Link className="link inline-flex min-h-11 items-center self-start" href="/blog">
         ← All articles
       </Link>
@@ -57,13 +57,13 @@ async function PostBody({ params }: Pick<PageProps<'/blog/[slug]'>, 'params'>) {
   return (
     <>
       <PostJsonLd post={post} />
-      <header className="flex flex-col gap-6 border-b-4 border-black pb-10">
+      <header className="flex flex-col gap-6 border-b-2 border-ink pb-10">
         {category && (
           <Link className="small self-start underline" href={`/blog?category=${category.slug}`}>
             {category.name}
           </Link>
         )}
-        <h1 className="h2 max-w-[22ch]">{post.title}</h1>
+        <h1 className="h2 max-w-[22ch] text-blue">{post.title}</h1>
         <p className="small">
           {[post.author?.name, formatDate(post.publishedAt), `${post.readingMinutes} min read`]
             .filter(Boolean)
@@ -80,7 +80,7 @@ async function PostBody({ params }: Pick<PageProps<'/blog/[slug]'>, 'params'>) {
       {post.tags.length > 0 && (
         <ul className="flex flex-wrap gap-3" aria-label="Tags">
           {post.tags.map((t) => (
-            <li key={t.slug} className="badge bg-white">
+            <li key={t.slug} className="chip pointer-events-none">
               {t.name}
             </li>
           ))}

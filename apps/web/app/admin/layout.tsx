@@ -7,8 +7,8 @@ export const metadata: Metadata = {
 
 export default function AdminLayout({ children }: LayoutProps<'/admin'>) {
   return (
-    <div className="wrap flex flex-col gap-10 py-[clamp(40px,6cqi,80px)]">
-      <p className="small self-start border-4 border-black bg-[#ff6b35] px-4 py-2">
+    <div className="wrap page flex flex-col gap-10 pb-[10vh]" data-hdr="dark">
+      <p className="badge self-start">
         Blog admin · demo of the new blog API
       </p>
       {children}

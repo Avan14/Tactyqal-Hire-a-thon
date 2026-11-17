@@ -19,13 +19,13 @@ const PAGE_SIZE = 10;
 export default function BlogIndexPage(props: PageProps<'/blog'>) {
   return (
     <section aria-labelledby="blog-title">
-      <div className="wrap flex flex-col gap-10 py-[clamp(56px,8cqi,112px)]">
+      <div className="wrap page flex flex-col gap-10 pb-[12vh]" data-hdr="dark">
         <header className="flex flex-col gap-6">
           <p className="small">The Tactyqal blog</p>
           <h1 className="h1" id="blog-title">
             Learn from Industry Experts
           </h1>
-          <p className="measure">
+          <p className="lead measure">
             Startup ideas, business models, problem solving and the lessons behind startups that failed.
           </p>
         </header>

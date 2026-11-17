@@ -23,7 +23,7 @@ async function ExpiredNotice({ searchParams }: Pick<PageProps<'/admin/login'>, '
   const { expired } = await searchParams;
   if (!expired) return null;
   return (
-    <p role="status" className="small border-4 border-black bg-white p-4">
+    <p role="status" className="status">
       Your session is no longer valid. The admin token may have changed. Please sign in again.
     </p>
   );

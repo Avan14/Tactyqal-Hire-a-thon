@@ -11,11 +11,11 @@ export function NewsletterForm() {
 
   return (
     <form action={action} className="flex max-w-[420px] flex-[1_1_320px] flex-col gap-1.5" noValidate>
-      <label htmlFor="newsletter-email" className="text-[15px] font-extrabold">
+      <label htmlFor="newsletter-email" className="eyebrow">
         Newsletter
       </label>
       {state.status === 'success' ? (
-        <p role="status" className="small border-4 border-black bg-[#ff6b35] p-4">
+        <p role="status" className="status">
           {state.message}
         </p>
       ) : (
@@ -33,7 +33,7 @@ export function NewsletterForm() {
               aria-invalid={error ? true : undefined}
               aria-describedby={error || state.message ? 'newsletter-msg' : undefined}
             />
-            <button className="btn btn-secondary" type="submit" disabled={pending}>
+            <button className="btn btn-ink" type="submit" disabled={pending}>
               {pending ? 'Subscribing…' : 'Subscribe'}
             </button>
           </div>

@@ -35,7 +35,7 @@ export function PostForm({ post, authors, categories }: Props) {
     <form action={action} className="card flex flex-col gap-6" noValidate>
       {post && <input type="hidden" name="id" value={post.id} />}
       {state.message && (
-        <p role="alert" className="small border-4 border-black bg-[#ff6b35] p-4">
+        <p role="alert" className="alert">
           {state.message}
         </p>
       )}
