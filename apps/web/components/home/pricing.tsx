@@ -13,7 +13,7 @@ export function Pricing() {
             as="h2"
             id="pricing-title"
             className="disp"
-            style={{ fontSize: 'min(11vw,19vh)' }}
+            style={{ fontSize: 'min(9vw,17vh)' }}
             lines={['One program.', 'Everything', 'included.']}
             lineClasses={[undefined, 'text-lime', 'text-lime']}
           />

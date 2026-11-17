@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { useEffect, useRef, useState } from 'react';
 import { nav, site } from '@/content/site';
 import { gsap, ScrollTrigger, prefersReducedMotion } from '@/lib/motion';
-import { ROUTE_EVENT } from './motion/route-watcher';
+import { HEADER_EVENT, ROUTE_EVENT } from './motion/route-watcher';
 import { scrollToTarget } from './motion/smooth-scroll';
 import { Wordmark } from './wordmark';
 
@@ -30,8 +30,13 @@ export function SiteHeader() {
 
   useEffect(() => {
     const onRoute = () => setRouteKey((k) => k + 1);
+    const onHeader = (e: Event) => setDark(!!(e as CustomEvent<{ dark: boolean }>).detail?.dark);
     window.addEventListener(ROUTE_EVENT, onRoute);
-    return () => window.removeEventListener(ROUTE_EVENT, onRoute);
+    window.addEventListener(HEADER_EVENT, onHeader);
+    return () => {
+      window.removeEventListener(ROUTE_EVENT, onRoute);
+      window.removeEventListener(HEADER_EVENT, onHeader);
+    };
   }, []);
 
   // Colour follows the section at the top edge; cream pages default to dark.

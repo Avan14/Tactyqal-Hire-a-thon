@@ -232,7 +232,8 @@
   select.input { appearance: none; background-image: linear-gradient(45deg, transparent 50%, var(--color-ink) 50%), linear-gradient(135deg, var(--color-ink) 50%, transparent 50%); background-position: calc(100% - 22px) 50%, calc(100% - 16px) 50%; background-size: 6px 6px; background-repeat: no-repeat; padding-right: 44px; }
   .err { font-size: 13px; font-weight: 600; color: #b8231d; }
   .bg-blue .err, .bg-ink .err { color: var(--color-lime); }
-  .hp { position: absolute; left: -10000px; width: 1px; height: 1px; overflow: hidden; }
+  .card .err { color: #b8231d; } /* white cards sit on blue sections too */
+  .trap { position: absolute; left: -10000px; width: 1px; height: 1px; overflow: hidden; } /* honeypot field */
   .alert { border-radius: 4px; padding: 14px 16px; font-size: 14px; font-weight: 600; background: var(--color-orange); color: var(--color-ink); }
   .status { border-radius: 4px; padding: 14px 16px; font-size: 14px; font-weight: 600; background: var(--color-lime); color: var(--color-ink); }
 
@@ -302,7 +303,7 @@
   @media (max-width: 820px) {
     .htitle { top: 13%; }
     .htitle h1 { font-size: min(21vw, 22vh); }
-    .hphone { top: 50%; width: 46vw; }
+    .hphone { top: 41%; width: 42vw; }
     .hcta { left: 16px; right: 16px; bottom: 3vh; max-width: none; }
     .hcta p { display: none; }
     .hbook, .cue { display: none; }

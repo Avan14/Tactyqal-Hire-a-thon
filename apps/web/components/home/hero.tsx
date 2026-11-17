@@ -5,6 +5,7 @@ import { useEffect, useRef } from 'react';
 import { hero, program, studentApps } from '@/content/site';
 import { gsap, isPhone, prefersReducedMotion, vh, vw } from '@/lib/motion';
 import { Pops } from '../motion/pops';
+import { HEADER_EVENT } from '../motion/route-watcher';
 import { scrollToTarget } from '../motion/smooth-scroll';
 
 const HEADLINE = ['IDEA', 'TO', 'FULL', 'APP.'];
@@ -77,13 +78,19 @@ export function Hero() {
         gsap.set(['.htitle .tagline', '.hbook', '.hcta'], { opacity: 1 });
       }
 
+      // The header sits on the blue scene first, so it stays light until the cream card lands.
+      const setHeader = (dark: boolean) => window.dispatchEvent(new CustomEvent(HEADER_EVENT, { detail: { dark } }));
+      setHeader(false);
+
       // Reduced motion: the hero stays a still, readable scene. No pin, no scrubbing.
       if (reduce) return;
 
-      // Scroll: pinned timeline from blue scene to postcard.
+      // Scroll: pinned timeline from blue scene to postcard. The header turns dark once the cream card takes over.
+      let wasDark = false;
       const tl = gsap.timeline({
         defaults: { ease: 'none' },
-        scrollTrigger: { trigger: el, start: 'top top', end: '+=320%', pin: true, scrub: 1, invalidateOnRefresh: true, onRefreshInit: setVars },
+        scrollTrigger: { trigger: el, start: 'top top', end: '+=320%', pin: true, scrub: 1, invalidateOnRefresh: true, onRefreshInit: setVars,
+          onUpdate: (self) => { const dark = self.progress > 0.36; if (dark !== wasDark) setHeader((wasDark = dark)); } },
       });
       tl.fromTo('.htitle', { y: 0, opacity: 1 }, { y: vh(-40), opacity: 0, duration: 1 }, 0)
         .fromTo(['.hbook', '.hcta', '.cue'], { opacity: 1 }, { opacity: 0, duration: 0.3 }, 0)
@@ -99,10 +106,6 @@ export function Hero() {
         .to('.names .nm-l', { x: vw(-4), duration: 1 }, 3.5)
         .to('.names .nm-r', { x: vw(4), duration: 1 }, 3.5);
 
-      // Header colour: light over the blue scene, dark once the card lands.
-      tl.scrollTrigger!.vars.onUpdate = (self) => {
-        document.querySelector('.hdr')?.classList.toggle('dark', self.progress > 0.36);
-      };
 
       // Mouse parallax on desktop.
       if (!reduce && matchMedia('(pointer:fine)').matches) {

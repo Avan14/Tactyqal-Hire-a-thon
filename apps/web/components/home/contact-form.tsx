@@ -84,7 +84,7 @@ export function ContactForm() {
         {fieldError('message')}
       </div>
       {/* Honeypot: hidden from people, filled only by bots. */}
-      <div className="hp" aria-hidden="true">
+      <div className="trap" aria-hidden="true">
         <label htmlFor="c-website">Website</label>
         <input id="c-website" name="website" type="text" tabIndex={-1} autoComplete="off" />
       </div>
