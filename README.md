@@ -6,7 +6,7 @@ A submission for the Tactyqal Labs Full Stack Developer Intern hire-a-thon on De
 
 | Brief | What this repo delivers |
 |---|---|
-| **Task 1: Homepage redesign** | A rebuilt homepage in Next.js 16, implemented from a Claude Design comp, responsive from 375px, with every section fed by the live site's real copy. |
+| **Task 1: Homepage redesign** | A rebuilt homepage in Next.js 16, implemented from an animated Claude Design comp (GSAP and Lenis), responsive from 375px, with every section fed by the live site's real copy. |
 | **Task 2: Blog backend** | A NestJS + PostgreSQL blog API that replaces the separate WordPress install: schema, full CRUD, search, filters, validation, auth for writes, tests, and an importer that migrates the existing posts with their URLs intact. |
 | Optional demo frontend | Blog index, article pages and a small admin, all running on the new API. |
 | Live demo / video | Demo video: _link added on submission_. Run it locally in about five minutes with the [quick start](#quick-start). |
@@ -32,7 +32,7 @@ So the redesign puts the parent's questions first and removes friction. The back
 
 - **One system, end to end.** The homepage's "Learn from Industry Experts" section, the blog, the contact form and the newsletter form all run on the new API. Nothing on the page is a dead button.
 - **Old URLs keep working.** The importer preserves every WordPress slug, so `/blog/{slug}/` links and their search ranking survive the migration.
-- **The signature interaction is useful, not decorative.** The 8-week program is an accessible timeline. Each stage opens to show what happens and which of Tactyqal's free tools supports it.
+- **The motion carries the story.** The hero pins and shrinks into a student-app postcard, and the 8-week program is a sideways track: one panel per stage, with what happens and which of Tactyqal's free tools supports it. Visitors who prefer reduced motion get a still hero, no smooth scrolling and stacked panels. Phones get the same stacked layout.
 - **Real content only.** All copy comes from tactyqal.com. Nothing is invented: no customers, quotes, numbers or logos. See [Content notes for the Tactyqal team](#content-notes-for-the-tactyqal-team).
 - **Every state is designed.** Loading skeletons, empty results, API errors with a working retry, form field errors and success messages all use the comp's states.
 
@@ -177,6 +177,7 @@ These are things I deliberately did **not** decide for you:
 2. **One editorial sentence.** The live site names the "Design & Prototyping" stage without describing it. The timeline uses one plain sentence there, marked `EDITORIAL` in `apps/web/content/site.ts`. Everything else is your copy, verbatim.
 3. **Free tools link.** The tools on the live page have no links. "Access All Tools Free" points at your tools section until the tools have their own URL (a single setting in `site.ts`).
 4. **Claims.** "Results guaranteed or money back" and "100% of our students launch a working app" are kept as your wording. You may want them backed by specifics.
+5. **Comp sections left out.** The design comp had a founder card with photo and credentials, a university-names block, parent quotes, an instalment line and refund terms. The live site has no content for them, so they are not built. They are easy to add to `apps/web/content/site.ts` when you have real material. The student screenshots are illustrated placeholders for the same reason.
 
 ## Project structure
 

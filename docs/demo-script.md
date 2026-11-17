@@ -14,9 +14,9 @@ Scroll the new homepage slowly.
 
 > "Every word here is Tactyqal's own copy. I didn't invent a single number or testimonial."
 
-- **Hero:** "Clear promise, two actions, and the facts a parent asks first: 8 weeks, 1:1, two to three hours a week."
+- **Hero:** scroll slowly through the pinned hero. "One promise, then the headline lifts away, the phone zooms, and the scene shrinks into a real student app. 8 weeks, 1:1, two to three hours a week are right there."
 - **Student apps:** "Real student apps, with the revenue figures your site already states."
-- **Timeline:** click through two stages. "This is the one interaction I added. Each stage of the eight weeks opens to show what happens and which of your free tools supports it. It's keyboard and screen-reader accessible."
+- **Program:** let the sideways track play. "Each of the four stages gets its own panel, with what happens and which of your free tools supports it. For visitors who prefer reduced motion, and on phones, it stacks instead."
 - **"Learn from Industry Experts":** "These three posts are live from the new blog API, not hard-coded."
 - **Contact form:** submit it empty to show the field errors, then fill it and submit. "That request is now a row in Postgres."
 - Resize to phone width for a few seconds.
