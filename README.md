@@ -9,7 +9,7 @@ A submission for the Tactyqal Labs Full Stack Developer Intern hire-a-thon on De
 | **Task 1: Homepage redesign** | A rebuilt homepage in Next.js 16, implemented from an animated Claude Design comp (GSAP and Lenis), responsive from 375px, with every section fed by the live site's real copy. |
 | **Task 2: Blog backend** | A NestJS + PostgreSQL blog API that replaces the separate WordPress install: schema, full CRUD, search, filters, validation, auth for writes, tests, and an importer that migrates the existing posts with their URLs intact. |
 | Optional demo frontend | Blog index, article pages and a small admin, all running on the new API. |
-| Live demo / video | Demo video: _link added on submission_. Run it locally in about five minutes with the [quick start](#quick-start). |
+| Live demo / video | **Live site:** https://tactyqal-hire-a-thon1.vercel.app · **API docs:** https://tactyqal-hire-a-thon-rmfr.onrender.com/api/docs · Demo video: _link added on submission_. The free API host sleeps when idle, so the first request after a quiet spell can take up to a minute. Or run it locally in about five minutes with the [quick start](#quick-start). |
 
 ![Homepage hero](docs/screenshots/homepage-hero.jpg)
 
