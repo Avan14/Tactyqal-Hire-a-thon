@@ -16,8 +16,24 @@ export const site = {
   phoneHref: 'tel:+919804772106',
   hours: 'Mon–Sat, 9am–7pm',
   responseTime: 'Reply within 24 hours',
-  /** The live site's tools section. Owner config: point at the tools app once it has its own URL. */
-  toolsUrl: 'https://tactyqal.com/#tools',
+  /** All free tools, as linked from the live site's "Access All Tools Free" button. */
+  toolsUrl: 'https://tactyqal.com/Tests',
+  /** The live site's "Book a Free Appointment" calendar (Google Calendar appointment schedule). */
+  bookingUrl:
+    'https://calendar.google.com/calendar/appointments/schedules/AcZssZ3JlaCrNitoPs8Bdr-FUP0cRfFI-MopSIH2azaPNDpRk56h6drYLbXSh-mDc9sfEZAQUKGdsUXs?gv=true',
+} as const;
+
+/**
+ * The founder lesson embedded on the live site beside "Startup Ideas 101:
+ * learn how to identify and validate profitable startup ideas from our
+ * founder". Title and speaker are the video's own (YouTube oEmbed).
+ */
+export const founderLesson = {
+  title: 'How to Come Up with Startup Ideas?',
+  speaker: 'Partha Chakraborty',
+  youtubeId: 'UyUH06CfLbk',
+  /** The live site starts the embed at 1:45. */
+  start: 105,
 } as const;
 
 export const nav = [
@@ -47,28 +63,40 @@ export interface StudentApp {
   name: string;
   description: string;
   detail?: string;
+  /** Screenshots from the live site's success-stories carousel, in apps/web/public/apps. */
+  screenshots: string[];
 }
+
+const shots = (slug: string, n: number) => Array.from({ length: n }, (_, i) => `/apps/${slug}-${i + 1}.webp`);
 
 export const studentApps: StudentApp[] = [
   {
     name: 'KrishiDrishti',
-    description: 'AI soil analysis and crop recommendations for Indian farmers',
+    description: 'AI-powered soil analysis & crop recommendation app that can impact millions of local farmers in India.',
+    screenshots: shots('krishidrishti', 3),
   },
   {
     name: 'Elenor Vegan Handbags',
     description: 'Corporate gifting platform',
     detail: 'Started by a 16-year-old · INR 9,000 in its first week',
+    screenshots: shots('elenor', 3),
   },
   {
     name: 'One Last Chapter',
     description: 'Children’s book subscription service',
     detail: 'Started by a 13-year-old · About INR 100,000 monthly revenue',
+    screenshots: shots('olc', 3),
   },
-  { name: 'Paws of Promise', description: 'Virtual pet adoption app' },
-  { name: 'AudioNova', description: 'AI music and video production company' },
+  {
+    name: 'Paws of Promise',
+    description: 'App for virtual pet adoption that connects pet lovers with pets from shelters.',
+    screenshots: shots('pop', 2),
+  },
+  { name: 'AudioNova', description: 'AI music/video production company.', screenshots: shots('audionova', 3) },
   {
     name: 'Converza',
-    description: 'Spanish learning app with an AI bot named Luna',
+    description: 'Spanish learning app featuring Luna, the friendly AI language learning bot.',
+    screenshots: shots('converza', 3),
   },
 ];
 
@@ -171,15 +199,16 @@ export const testimonials = [
 export const tools = {
   title: 'Free Tools to Get Started',
   intro: 'Explore our startup assessment tools used by 1000+ entrepreneurs',
+  /** Each tool opens the live tool app, exactly as the live site links it. */
   items: [
-    'Startup Idea Generator',
-    'Fundability Assessment',
-    'Team Evaluation Tool',
-    'Pitch Deck Analyzer',
-    'Top 10 Traits For Business Success',
-    'Cofounder Compatibility Test',
-    'Problem-Solution Fit',
-    'Website Landing Page Assessment',
+    { name: 'Startup Idea Generator', href: 'https://www.tactyqal.com/index.php/Questions/ideaDisplayer' },
+    { name: 'Fundability Assessment', href: 'https://tactyqal.com/Tests/Fundable-Startup' },
+    { name: 'Team Evaluation Tool', href: 'https://tactyqal.com/Tests/Startup-Team' },
+    { name: 'Pitch Deck Analyzer', href: 'https://www.tactyqal.com/Tests/Pitch-Deck' },
+    { name: 'Top 10 Traits For Business Success', href: 'https://www.tactyqal.com/Tests/General-Success' },
+    { name: 'Cofounder Compatibility Test', href: 'https://www.tactyqal.com/Tests/The-Right-Cofounder' },
+    { name: 'Problem-Solution Fit', href: 'https://www.tactyqal.com/Tests/Problem-Solution-Fit' },
+    { name: 'Website Landing Page Assessment', href: 'https://www.tactyqal.com/Tests/Landing-Page' },
   ],
 } as const;
 
