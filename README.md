@@ -175,9 +175,11 @@ These are things I deliberately did **not** decide for you:
 
 1. **Conflicting student counts.** The live hero says 100+ students and the "Why" section says 50+. The redesign keeps 50+ in the "Proven Track Record" line, as written, and leaves the count out of the hero until you confirm the number.
 2. **One editorial sentence.** The live site names the "Design & Prototyping" stage without describing it. The timeline uses one plain sentence there, marked `EDITORIAL` in `apps/web/content/site.ts`. Everything else is your copy, verbatim.
-3. **Free tools link.** The tools on the live page have no links. "Access All Tools Free" points at your tools section until the tools have their own URL (a single setting in `site.ts`).
+3. **Founder lesson.** The live site embeds a YouTube talk beside "Startup Ideas 101 … from our founder". The redesign links that talk and names its speaker, Partha Chakraborty, as the video's own title does. Please confirm you want the founder named on the homepage.
 4. **Claims.** "Results guaranteed or money back" and "100% of our students launch a working app" are kept as your wording. You may want them backed by specifics.
-5. **Comp sections left out.** The design comp had a founder card with photo and credentials, a university-names block, parent quotes, an instalment line and refund terms. The live site has no content for them, so they are not built. They are easy to add to `apps/web/content/site.ts` when you have real material. The student screenshots are illustrated placeholders for the same reason.
+5. **Comp sections left out.** The design comp had a founder photo and credentials, a university-names block, parent quotes, an instalment line and refund terms. The live site has no content for them, so they are not built. They are easy to add to `apps/web/content/site.ts` when you have real material.
+6. **Real assets reused, stock ones not.** The student-app screenshots, the eight tool links and the Google Calendar booking page all come from tactyqal.com. Two things were deliberately left out: the testimonial photos, which are stock portraits from a random-portrait service rather than the students named, and the two background videos, which are stock footage. Testimonials show initials until you have real photos with permission.
+7. **Student app links.** The live site does not link to the student apps, so neither does the redesign. If the students are happy to be linked, add each app's URL in `site.ts`.
 
 ## Project structure
 
