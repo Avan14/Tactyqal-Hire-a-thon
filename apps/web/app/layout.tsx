@@ -1,41 +1,41 @@
 import type { Metadata, Viewport } from 'next';
-import { Hanken_Grotesk } from 'next/font/google';
+import { Anton, Barlow_Condensed, Inter } from 'next/font/google';
+import { Suspense } from 'react';
+import { RouteWatcher } from '@/components/motion/route-watcher';
+import { SmoothScroll } from '@/components/motion/smooth-scroll';
 import { SiteFooter } from '@/components/site-footer';
 import { SiteHeader } from '@/components/site-header';
 import { site } from '@/content/site';
 import { siteUrl } from '@/lib/format';
 import './globals.css';
 
-const hanken = Hanken_Grotesk({
-  subsets: ['latin'],
-  weight: ['400', '700', '800', '900'],
-  variable: '--font-hanken',
-  display: 'swap',
-});
+const inter = Inter({ subsets: ['latin'], weight: ['400', '500', '600', '700'], variable: '--font-inter', display: 'swap' });
+const anton = Anton({ subsets: ['latin'], weight: '400', variable: '--font-anton', display: 'swap' });
+const barlow = Barlow_Condensed({ subsets: ['latin'], weight: ['500', '600'], style: ['italic'], variable: '--font-barlow', display: 'swap' });
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl()),
   title: {
-    default: 'Tactyqal Labs: 1:1 mentoring for teens to build real apps in 8 weeks',
+    default: 'Tactyqal Labs: your teen builds and launches a real app in 8 weeks',
     template: '%s | Tactyqal Labs',
   },
   description: site.description,
-  openGraph: {
-    type: 'website',
-    siteName: site.name,
-    locale: 'en_IN',
-  },
+  openGraph: { type: 'website', siteName: site.name, locale: 'en_IN' },
   twitter: { card: 'summary_large_image' },
 };
 
 export const viewport: Viewport = {
-  themeColor: '#fcfcfc',
+  themeColor: '#2f4fd8',
 };
 
 export default function RootLayout({ children }: LayoutProps<'/'>) {
   return (
-    <html lang="en" className={hanken.variable} data-scroll-behavior="smooth">
+    <html lang="en" className={`${inter.variable} ${anton.variable} ${barlow.variable}`}>
       <body>
+        <SmoothScroll />
+        <Suspense fallback={null}>
+          <RouteWatcher />
+        </Suspense>
         <div className="tq">
           <a className="skip-link" href="#main">
             Skip to content

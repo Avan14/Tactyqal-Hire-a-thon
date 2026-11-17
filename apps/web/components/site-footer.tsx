@@ -1,40 +1,28 @@
 import Link from 'next/link';
 import { nav, site } from '@/content/site';
+import { FooterGiant } from './motion/footer-giant';
 import { NewsletterForm } from './newsletter-form';
-import { Wordmark } from './wordmark';
 
 export function SiteFooter() {
   return (
-    <footer className="foot border-t-2 border-black">
-      <div className="wrap flex flex-col gap-12 pt-14 pb-8">
-        <div className="flex flex-wrap gap-x-6 gap-y-10">
-          <div className="flex max-w-[420px] flex-[1_1_357px] flex-col gap-3">
-            <Wordmark />
-            <p className="small max-w-[34ch]">{site.description}</p>
+    <footer className="foot bg-orange" data-hdr="dark">
+      <div className="flex flex-wrap items-start justify-between gap-x-10 gap-y-8">
+        <nav aria-label="Footer" className="frow">
+          <div>
+            {nav.map((item) => (
+              <Link key={item.href} href={item.href} className="inline-flex min-h-11 items-center">
+                {item.label}
+              </Link>
+            ))}
           </div>
-          <nav aria-label="Footer" className="flex-[1_1_260px]">
-            <ul className="grid grid-cols-2 gap-x-6 gap-y-1">
-              {nav.map((item) => (
-                <li key={item.href}>
-                  <Link className="inline-flex min-h-11 items-center" href={item.href}>
-                    {item.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </nav>
-          <NewsletterForm />
-        </div>
-        <div className="small flex flex-wrap justify-between gap-x-6 gap-y-2 border-t-2 border-black pt-6">
-          <span>© Tactyqal Labs</span>
-          <span>
-            {site.hours} ·{' '}
-            <a className="text-[15px] underline" href={`mailto:${site.email}`}>
-              {site.email}
-            </a>
-          </span>
-        </div>
+        </nav>
+        <NewsletterForm />
       </div>
+      <p className="small mt-6 flex flex-wrap gap-x-5 gap-y-1 text-[12px] opacity-80">
+        <span>© Tactyqal Labs</span>
+        <span>{site.hours}</span>
+      </p>
+      <FooterGiant />
     </footer>
   );
 }
