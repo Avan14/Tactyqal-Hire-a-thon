@@ -20,7 +20,7 @@ export function Testimonials() {
             <Fade as="li" key={t.name} delay={(i % 3) * 0.08}>
               <figure className={`qcard h-full ${i % 3 === 2 ? 'blue' : ''}`}>
                 <blockquote>“{t.quote}”</blockquote>
-                <figcaption><i aria-hidden="true" /><span><b>{t.name}</b><br />Student</span></figcaption>
+                <figcaption><i aria-hidden="true">{t.name.split(' ').map((w) => w[0]).join('')}</i><span><b>{t.name}</b><br />Student</span></figcaption>
               </figure>
             </Fade>
           ))}

@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect, useRef } from 'react';
 import { hero, program, studentApps } from '@/content/site';
@@ -204,9 +205,11 @@ export function Hero() {
         <div className="cardp">
           <div className="olc">
             <div className="top"><small>Student app · started at 13</small><b>One Last Chapter</b></div>
-            <div className="books">
-              <i style={{ background: '#ff8a57' }} /><i style={{ background: '#7f95ee' }} /><i style={{ background: '#f5c84a' }} />
-            </div>
+            {olc && (
+              <div className="olc-shot">
+                <Image src={olc.screenshots[1]} alt="" width={1600} height={880} sizes="(max-width: 820px) 50vw, 20vw" />
+              </div>
+            )}
             <div className="stat"><small>Monthly revenue</small><b>About INR 1,00,000</b></div>
             <p className="sr-only">{olc?.description}</p>
           </div>

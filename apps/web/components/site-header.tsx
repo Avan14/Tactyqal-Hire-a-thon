@@ -156,7 +156,8 @@ export function SiteHeader() {
         <div className="side">
           <ul>
             <li className="mi"><Link href="/#contact" onClick={go('/#contact')} tabIndex={open ? 0 : -1}>Book a free call</Link></li>
-            <li className="mi"><a href={site.toolsUrl} tabIndex={open ? 0 : -1}>Free startup tools</a></li>
+            <li className="mi"><a href={site.bookingUrl} target="_blank" rel="noopener noreferrer" tabIndex={open ? 0 : -1}>Pick a time on our calendar ↗</a></li>
+            <li className="mi"><a href={site.toolsUrl} target="_blank" rel="noopener noreferrer" tabIndex={open ? 0 : -1}>Free startup tools ↗</a></li>
             <li className="mi"><Link href="/blog" onClick={go('/blog')} tabIndex={open ? 0 : -1}>Blog</Link></li>
           </ul>
           <p className="mi">

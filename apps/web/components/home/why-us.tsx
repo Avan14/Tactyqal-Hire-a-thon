@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { benefits, site } from '@/content/site';
+import { benefits, founderLesson, site } from '@/content/site';
 import { Fade } from '../motion/reveal';
 import { LatestPosts } from './latest-posts';
 
@@ -18,6 +18,20 @@ export function WhyUs() {
               </li>
             ))}
           </ul>
+          <a
+            className="video"
+            href={`https://www.youtube.com/watch?v=${founderLesson.youtubeId}&t=${founderLesson.start}s`}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <span className="eyebrow opacity-85">Free lesson · Startup Ideas 101</span>
+            <b>{founderLesson.title}</b>
+            <span className="dur">With {founderLesson.speaker} · YouTube</span>
+            <span className="play" aria-hidden="true">
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="#14162e"><path d="M8 5v14l11-7z" /></svg>
+            </span>
+            <span className="sr-only"> (opens YouTube in a new tab)</span>
+          </a>
           <p className="text-[14px] text-muted">
             Questions first? <Link className="link" href="/#contact">Book a free consultation</Link> or email {site.email}.
           </p>

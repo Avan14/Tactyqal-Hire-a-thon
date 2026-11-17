@@ -17,6 +17,10 @@ export function Contact() {
       <Fade as="p" className="lead relative z-2 mx-auto my-[4vh] max-w-[44ch]">
         Book a free consultation. We reply within 24 hours, {site.hours}.
       </Fade>
+      <a className="pill relative z-2 mb-[4vh]" data-cursor="BOOK" href={site.bookingUrl} target="_blank" rel="noopener noreferrer">
+        Pick a time on our calendar ↗<span className="sr-only"> (opens Google Calendar in a new tab)</span>
+      </a>
+      <p className="small relative z-2 mb-4 opacity-80">Or send us a message</p>
       <ContactForm />
       <div className="relative z-2 mt-[5vh] flex flex-wrap justify-center gap-7 text-[15px]">
         <a className="link" href={site.phoneHref}>Call or WhatsApp {site.phone}</a>

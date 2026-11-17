@@ -2,6 +2,7 @@ import { studentApps } from '@/content/site';
 import { Pops } from '../motion/pops';
 import { BigNumber, Fade, Float, Lines } from '../motion/reveal';
 import { AppCards } from './app-cards';
+import { Shot } from './shot';
 
 const featured = [
   { name: 'One Last Chapter', age: '13', result: 'About INR 100,000 monthly revenue', bg: 'bg-orange', hdr: 'dark', numClass: '', fc: 'var(--color-ink)', g: 'g4', chip: 'bg-ink text-cream' },
@@ -23,8 +24,8 @@ export function StudentApps() {
               <p className="agecap">years old when they started</p>
             </div>
             <div className="r" style={i === 1 ? { borderColor: 'rgba(244,241,232,.6)' } : undefined}>
-              <Float speed={0.35} className="self-end mr-[6vw]" style={{ ['--fc' as string]: f.fc }}>
-                <div className={`ph ${f.g}`}><div className="bar">{app.name}</div><div className="lines"><span /><span /><span /></div></div>
+              <Float speed={0.35} className="self-end mr-[4vw]" style={{ ['--fc' as string]: f.fc }}>
+                <Shot src={app.screenshots[0]} alt={`${app.name}, the student's live app`} sizes="(max-width: 820px) 80vw, 32vw" />
               </Float>
               <div className="flex flex-col gap-[18px]">
                 <Lines as="h3" id={`showcase-${i}`} className="disp" lines={[app.name]} />

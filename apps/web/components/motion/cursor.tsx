@@ -24,7 +24,16 @@ export function Cursor() {
     const ly = gsap.quickTo(l, 'y', { duration: 0.25, ease: 'power3' });
     const root = document.documentElement;
 
-    const onMove = (e: MouseEvent) => { qx(e.clientX); qy(e.clientY); lx(e.clientX); ly(e.clientY); };
+    let seen = false;
+    const onMove = (e: MouseEvent) => {
+      if (!seen) {
+        // Appear only once the pointer is known, never parked at the top-left corner.
+        seen = true;
+        gsap.set([d, l], { x: e.clientX, y: e.clientY });
+        gsap.to(d, { opacity: 1, duration: 0.2 });
+      }
+      qx(e.clientX); qy(e.clientY); lx(e.clientX); ly(e.clientY);
+    };
     const onLeave = () => gsap.to([d, l], { opacity: 0, duration: 0.2 });
     const onEnter = () => gsap.to(d, { opacity: 1, duration: 0.2 });
     const onOver = (e: MouseEvent) => {
@@ -39,7 +48,6 @@ export function Cursor() {
     root.addEventListener('mouseleave', onLeave);
     root.addEventListener('mouseenter', onEnter);
     document.addEventListener('mouseover', onOver);
-    gsap.set(d, { opacity: 1 });
     d.dataset.on = 'true';
     return () => {
       removeEventListener('mousemove', onMove);

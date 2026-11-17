@@ -1,11 +1,16 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
-import { program } from '@/content/site';
+import { program, studentApps, tools } from '@/content/site';
 import { gsap, ScrollTrigger, prefersReducedMotion } from '@/lib/motion';
 
-const screens = ['g1', 'g3', 'g2', 'g4'];
-const labels = ['Problem', 'Prototype', 'Beta', 'Launch day'];
+import { Shot } from './shot';
+
+/** One real student app per stage, shown as an example of student work (not as that stage's literal output). */
+const stageApps = ['KrishiDrishti', 'Converza', 'Elenor Vegan Handbags', 'One Last Chapter'].map(
+  (name) => studentApps.find((a) => a.name === name)!,
+);
+const toolHref = (name: string) => tools.items.find((t) => t.name === name)?.href;
 
 /**
  * The four program stages on a sideways track that scrolls with the page on
@@ -76,19 +81,33 @@ export function Program() {
                 <h3 className="disp">{stage.name}</h3>
               </div>
               <div className="r">
-                <div className="fr" style={{ ['--fc' as string]: 'var(--color-orange)' }}>
-                  <div className={`ph ${screens[i]}`} style={{ ['--ar' as string]: i % 2 ? '4/5' : '4/3' }}>
-                    <div className="bar">{labels[i]}</div>
-                    <div className="lines"><span /><span /><span /></div>
-                  </div>
-                </div>
+                <figure className="fr m-0" style={{ ['--fc' as string]: 'var(--color-orange)' }}>
+                  <Shot src={stageApps[i].screenshots[i === 0 ? 1 : 0]} alt={`${stageApps[i].name}, built by a Tactyqal student`} sizes="(max-width: 820px) 90vw, 26vw" />
+                  <figcaption className="small mt-2 text-[11px]">Student app · {stageApps[i].name}</figcaption>
+                </figure>
                 <div className="flex flex-col gap-3">
                   {stage.points.map((pt) => <p key={pt}>{pt}</p>)}
                 </div>
                 {stage.tools.length > 0 && (
                   <div className="see">
                     Free tools for this stage
-                    <b>{stage.tools.join(' · ')}</b>
+                    <b>
+                      {stage.tools.map((t, k) => {
+                        const href = toolHref(t);
+                        return (
+                          <span key={t}>
+                            {k > 0 && ' · '}
+                            {href ? (
+                              <a className="underline decoration-[1.5px] underline-offset-4" href={href} target="_blank" rel="noopener noreferrer">
+                                {t}
+                              </a>
+                            ) : (
+                              t
+                            )}
+                          </span>
+                        );
+                      })}
+                    </b>
                   </div>
                 )}
               </div>

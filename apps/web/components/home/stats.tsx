@@ -1,6 +1,7 @@
-import { benefits, pricing } from '@/content/site';
+import { benefits, pricing, studentApps } from '@/content/site';
 import { Pops } from '../motion/pops';
 import { Fade, Float, Lines } from '../motion/reveal';
+import { Shot } from './shot';
 import { GiantWord, GrowthRise } from './stats-motion';
 
 /** The track record and the 1:1 promise, as the live site states them. */
@@ -20,8 +21,8 @@ export function Stats() {
           lineClasses={['text-lime']}
         />
         <Fade as="p" className="lead relative z-2 mt-[4vh] max-w-[40ch]">{benefits[2].text}</Fade>
-        <Float speed={0.7} className="float" style={{ ['--fc' as string]: 'var(--color-lime)', right: '12vw', top: '26%' }}>
-          <div className="ph g5"><div className="bar">Student app</div><div className="lines"><span /><span /></div></div>
+        <Float speed={0.7} className="float" style={{ ['--fc' as string]: 'var(--color-lime)', right: '5vw', top: '24%' }}>
+          <Shot src={studentApps.find((a) => a.name === 'AudioNova')!.screenshots[0]} alt="AudioNova, a student app" sizes="20vw" />
         </Float>
         <Lines
           as="p"
