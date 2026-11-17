@@ -27,7 +27,7 @@ export function ContactForm() {
         ref={statusRef}
         tabIndex={-1}
         role="status"
-        className="split-body card flex max-w-[960px] flex-col gap-3 p-[clamp(24px,4cqi,40px)] shadow-[12px_12px_0_0_#000]"
+        className="card relative z-2 flex w-full max-w-[720px] flex-col gap-3 text-left"
       >
         <p className="h3">Request received</p>
         <p>{state.message}</p>
@@ -54,11 +54,11 @@ export function ContactForm() {
     <form
       action={action}
       noValidate
-      className="split-body card relative flex max-w-[960px] flex-col gap-5 p-[clamp(24px,4cqi,40px)] shadow-[12px_12px_0_0_#000]"
+      className="card relative z-2 flex w-full max-w-[720px] flex-col gap-5 text-left"
     >
       {state.status === 'error' && (
-        <div ref={statusRef} tabIndex={-1} role="alert" className="border-4 border-black bg-[#ff6b35] p-4">
-          <p className="small">{state.message}</p>
+        <div ref={statusRef} tabIndex={-1} role="alert" className="alert">
+          {state.message}
         </div>
       )}
       <div className="grid grid-cols-[repeat(auto-fit,minmax(min(240px,100%),1fr))] gap-5">
@@ -90,7 +90,7 @@ export function ContactForm() {
       </div>
       <div className="flex flex-wrap items-center gap-x-5 gap-y-3">
         <button className="btn btn-primary" type="submit" disabled={pending}>
-          {pending ? 'Sending…' : 'Book a Free Appointment'}
+          {pending ? 'Sending…' : 'Book a free consultation'}
         </button>
         <span className="small">We reply within 24 hours.</span>
       </div>

@@ -1,27 +1,24 @@
 import { site, tools } from '@/content/site';
-import { Reveal } from '../reveal';
+import { Fade, Lines } from '../motion/reveal';
 
 export function Tools() {
   return (
-    <section className="sec bg-white" id="tools" aria-labelledby="tools-title">
-      <Reveal className="wrap split">
-        <div className="split-head">
-          <h2 className="h2" id="tools-title">
-            {tools.title}
-          </h2>
-          <p className="measure">{tools.intro}</p>
-          <a className="link inline-flex min-h-11 items-center" href={site.toolsUrl}>
-            Access All Tools Free
+    <section className="bg-lime" id="tools" data-hdr="dark" aria-labelledby="tools-title">
+      <div className="tools">
+        <div className="flex flex-col gap-[3vh]">
+          <p className="eyebrow">Not ready to book?</p>
+          <Lines as="h2" id="tools-title" className="disp" style={{ fontSize: 'min(9vw,16vh)' }} lines={['Free tools', 'to get', 'started.']} />
+          <p className="lead max-w-[36ch]">{tools.intro}.</p>
+          <a href={site.toolsUrl} className="pill btn-ink self-start" style={{ background: 'var(--color-ink)', color: 'var(--color-lime)' }}>
+            Access all tools free →
           </a>
         </div>
-        <ul className="split-body grid grid-cols-[repeat(auto-fit,minmax(min(300px,100%),1fr))] gap-x-6">
+        <Fade as="ul" className="chips" aria-label="Free tools">
           {tools.items.map((name) => (
-            <li key={name} className="row h3">
-              {name}
-            </li>
+            <li key={name}>{name}</li>
           ))}
-        </ul>
-      </Reveal>
+        </Fade>
+      </div>
     </section>
   );
 }

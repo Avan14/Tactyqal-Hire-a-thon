@@ -1,9 +1,11 @@
 import { Contact } from '@/components/home/contact';
+import { Fab } from '@/components/home/fab';
 import { Faq } from '@/components/home/faq';
 import { Hero } from '@/components/home/hero';
-import { LatestPosts } from '@/components/home/latest-posts';
 import { Pricing } from '@/components/home/pricing';
 import { Program } from '@/components/home/program';
+import { Statement } from '@/components/home/statement';
+import { Stats } from '@/components/home/stats';
 import { StudentApps } from '@/components/home/student-apps';
 import { Testimonials } from '@/components/home/testimonials';
 import { Tools } from '@/components/home/tools';
@@ -47,15 +49,17 @@ export default function HomePage() {
     <>
       <StructuredData />
       <Hero />
+      <Statement />
       <StudentApps />
       <Program />
+      <Stats />
       <WhyUs />
       <Testimonials />
-      <Tools />
       <Pricing />
+      <Tools />
       <Faq />
-      <LatestPosts />
       <Contact />
+      <Fab />
     </>
   );
 }

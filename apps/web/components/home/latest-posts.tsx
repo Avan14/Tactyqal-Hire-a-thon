@@ -4,7 +4,6 @@ import { Suspense } from 'react';
 import { getPosts } from '@/lib/blog';
 import { LoadErrorBoundary } from '../load-error';
 import { PostRow, PostRowsSkeleton } from '../post-row';
-import { Reveal } from '../reveal';
 
 /**
  * Rendered at request time behind Suspense, so the static homepage shell
@@ -32,26 +31,20 @@ async function LatestPostsList() {
   );
 }
 
+/** The live site's "Learn from Industry Experts" block, fed by the new blog API. */
 export function LatestPosts() {
   return (
-    <section className="sec" id="blog" aria-labelledby="blog-title">
-      <Reveal className="wrap split">
-        <div className="split-head">
-          <h2 className="h2" id="blog-title">
-            Learn from Industry Experts
-          </h2>
-          <Link className="link inline-flex min-h-11 items-center" href="/blog">
-            Read All Articles
-          </Link>
-        </div>
-        <div className="split-body">
-          <LoadErrorBoundary>
-            <Suspense fallback={<PostRowsSkeleton />}>
-              <LatestPostsList />
-            </Suspense>
-          </LoadErrorBoundary>
-        </div>
-      </Reveal>
-    </section>
+    <>
+      <p className="eyebrow">From the blog</p>
+      <h2 className="h2 text-[clamp(36px,4vw,62px)]" id="blog-title">Learn from industry experts.</h2>
+      <LoadErrorBoundary>
+        <Suspense fallback={<PostRowsSkeleton />}>
+          <LatestPostsList />
+        </Suspense>
+      </LoadErrorBoundary>
+      <Link className="ghost-link mt-auto self-start" href="/blog">
+        <i /><span>Read all articles</span>
+      </Link>
+    </>
   );
 }

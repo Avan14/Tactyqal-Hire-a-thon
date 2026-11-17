@@ -1,29 +1,24 @@
 import { faqs } from '@/content/site';
-import { PlusIcon } from '../icons';
-import { Reveal } from '../reveal';
+import { Fade, Lines } from '../motion/reveal';
 
 /** Native <details>: keyboard and screen-reader friendly with no JavaScript. */
 export function Faq() {
   return (
-    <section className="sec bg-white" id="faq" aria-labelledby="faq-title">
-      <Reveal className="wrap split">
-        <div className="split-head">
-          <h2 className="h2" id="faq-title">
-            FAQ
-          </h2>
-        </div>
-        <div className="split-body faq rows">
-          {faqs.map((item) => (
-            <details key={item.q}>
-              <summary>
+    <section className="bg-cream" id="faq" data-hdr="dark" aria-labelledby="faq-title">
+      <div className="faq">
+        <Lines as="h2" id="faq-title" className="disp mb-[6vh] text-blue" style={{ fontSize: 'min(12vw,20vh)' }} lines={['Straight', 'answers.']} />
+        <Fade>
+          {faqs.map((item, i) => (
+            <details key={item.q} className="qa" name="faq">
+              <summary aria-controls={`ans-${i}`}>
                 <span>{item.q}</span>
-                <PlusIcon />
+                <i aria-hidden="true">+</i>
               </summary>
-              <p className="ans">{item.a}</p>
+              <p className="ans" id={`ans-${i}`}>{item.a}</p>
             </details>
           ))}
-        </div>
-      </Reveal>
+        </Fade>
+      </div>
     </section>
   );
 }
