@@ -110,7 +110,7 @@ export function PostForm({ post, authors, categories }: Props) {
           defaultValue={v?.contentHtml ?? post?.contentHtml}
           {...describe('contentHtml')}
         />
-        <p className="small">Unsafe markup such as scripts is removed by the API before saving.</p>
+        <p className="small">Scripts and other unsafe code are removed automatically when you save.</p>
         {errorText('contentHtml')}
       </div>
 

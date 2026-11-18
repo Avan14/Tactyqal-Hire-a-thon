@@ -19,16 +19,16 @@ function text(formData: FormData, key: string): string {
 export async function login(_prev: FormState, formData: FormData): Promise<FormState> {
   const token = text(formData, 'token');
   if (!token) {
-    return { status: 'error', fieldErrors: { token: 'Enter the admin token' } };
+    return { status: 'error', fieldErrors: { token: 'Enter your access key' } };
   }
   try {
     // Any admin-only read proves the token is valid.
     await api<Paginated<PostSummary>>('/posts?status=DRAFT&limit=1', { token });
   } catch (err) {
     if (err instanceof ApiError && err.status === 401) {
-      return { status: 'error', fieldErrors: { token: 'That token was not accepted' } };
+      return { status: 'error', fieldErrors: { token: 'That access key isn’t valid. Check it and try again.' } };
     }
-    return { status: 'error', message: 'The blog service is not reachable right now.' };
+    return { status: 'error', message: 'We couldn’t reach the blog service. Please try again in a moment.' };
   }
   await setAdminToken(token);
   redirect('/admin/posts');

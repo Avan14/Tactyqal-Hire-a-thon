@@ -10,10 +10,7 @@ export default function AdminLoginPage(props: PageProps<'/admin/login'>) {
       <Suspense fallback={null}>
         <ExpiredNotice searchParams={props.searchParams} />
       </Suspense>
-      <p>
-        Enter the admin API token from the API’s environment (ADMIN_API_TOKEN). It is kept in an
-        httpOnly cookie for this browser session and never exposed to page scripts.
-      </p>
+      <p className="lead">Manage the Tactyqal blog: write, edit, publish and remove articles.</p>
       <LoginForm />
     </section>
   );
@@ -24,7 +21,7 @@ async function ExpiredNotice({ searchParams }: Pick<PageProps<'/admin/login'>, '
   if (!expired) return null;
   return (
     <p role="status" className="status">
-      Your session is no longer valid. The admin token may have changed. Please sign in again.
+      Your session has expired. Please sign in again.
     </p>
   );
 }

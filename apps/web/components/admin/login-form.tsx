@@ -16,7 +16,7 @@ export function LoginForm() {
         </p>
       )}
       <div className="field">
-        <label htmlFor="token">Admin token</label>
+        <label htmlFor="token">Access key</label>
         <input
           id="token"
           name="token"
@@ -24,8 +24,11 @@ export function LoginForm() {
           className="input"
           autoComplete="current-password"
           aria-invalid={error ? true : undefined}
-          aria-describedby={error ? 'token-err' : undefined}
+          aria-describedby={error ? 'token-hint token-err' : 'token-hint'}
         />
+        <p id="token-hint" className="text-[14px] text-muted">
+          Use the admin access key from your Tactyqal team. You’ll stay signed in on this browser for 8 hours.
+        </p>
         {error && (
           <p id="token-err" className="err">
             {error}
@@ -33,7 +36,7 @@ export function LoginForm() {
         )}
       </div>
       <button className="btn btn-primary self-start" type="submit" disabled={pending}>
-        {pending ? 'Checking…' : 'Sign in'}
+        {pending ? 'Signing in…' : 'Sign in'}
       </button>
     </form>
   );
