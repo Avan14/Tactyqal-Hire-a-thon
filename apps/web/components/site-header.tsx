@@ -119,7 +119,7 @@ export function SiteHeader() {
   return (
     <>
       <div className="progress" id="progress" aria-hidden="true" />
-      <header className={`hdr ${light ? '' : 'dark'} ${hidden && !open ? 'hidden' : ''}`.trim()} style={open ? { color: 'var(--color-cream)' } : undefined}>
+      <header className={`hdr ${light ? '' : 'dark'} ${hidden && !open ? 'hidden' : ''}`.trim()} style={open ? { color: 'var(--color-cream)', background: 'var(--color-ink)' } : undefined}>
         <Link href={primary[0].href} className="c1" onClick={go(primary[0].href)}>
           <span className="roll"><span data-t={primary[0].label}>{primary[0].label}</span></span>
         </Link>
@@ -140,7 +140,7 @@ export function SiteHeader() {
         </div>
       </header>
 
-      <nav className="menu" id="site-menu" ref={menuRef} aria-label="Site menu" aria-hidden={!open}>
+      <nav className="menu" id="site-menu" ref={menuRef} aria-label="Site menu" aria-hidden={!open} data-lenis-prevent>
         <ol className="disp">
           {nav.map((item, i) => (
             <li key={item.href} className="ln">
