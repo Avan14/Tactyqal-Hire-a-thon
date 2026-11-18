@@ -345,12 +345,14 @@
   .zoom, .zin { position: absolute; inset: 0; transform-origin: 50% 72%; will-change: transform; }
   .zoom { z-index: 3; }
   .hphone { position: absolute; left: 50%; top: 47%; width: clamp(210px, 21vw, 330px); transform: translateX(-50%) rotate(-4deg); }
-  .desk { position: absolute; left: -10%; right: -10%; top: 94%; height: 60%; background: linear-gradient(#f0b77f, #d99257); }
-  .hcta { position: absolute; z-index: 5; left: 3.5vw; bottom: 5vh; display: flex; flex-direction: column; gap: 14px; color: var(--color-cream); max-width: 320px; }
+  /* the desk the phone stands on: --desk is how much of the hero it covers */
+  .hero { --desk: 16%; }
+  .desk { position: absolute; left: -10%; right: -10%; top: calc(100% - var(--desk)); height: 60%; background: linear-gradient(#f0b77f, #d99257); }
+  .hcta { position: absolute; z-index: 5; left: 3.5vw; bottom: calc(var(--desk) + 3vh); display: flex; flex-direction: column; gap: 14px; color: var(--color-cream); max-width: 320px; }
   .hcta p { font-size: 15px; line-height: 1.4; opacity: 0.92; }
   .hcta .rowc { display: flex; gap: 10px; flex-wrap: wrap; }
   .hcta .fact { border: 1.5px solid rgba(244, 241, 232, 0.6); border-radius: 999px; padding: 6px 12px; font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; }
-  .hbook { position: absolute; z-index: 5; right: 3.5vw; bottom: 5vh; color: var(--color-lime); }
+  .hbook { position: absolute; z-index: 5; right: 3.5vw; bottom: calc(var(--desk) + 3vh); color: var(--color-lime); }
   .cue { position: absolute; left: 50%; bottom: 4.2vh; z-index: 5; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; gap: 10px; color: var(--color-cream); font-size: 11px; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; opacity: 0; pointer-events: none; }
   .cue i { display: block; width: 1.5px; height: 40px; background: rgba(244, 241, 232, 0.3); position: relative; overflow: hidden; }
   .cue i::after { content: ""; position: absolute; inset: 0; background: var(--color-lime); transform: translateY(-100%); animation: cue 1.9s cubic-bezier(0.77, 0, 0.175, 1) infinite; }
@@ -360,6 +362,8 @@
     .htitle h1 { font-size: min(21vw, 22vh); }
     .hphone { top: 41%; width: 42vw; }
     .hcta { left: 16px; right: 16px; bottom: 3vh; max-width: none; }
+    /* on phones the fact chips sit on the desk, so they switch to ink for contrast on tan */
+    .hcta .fact { color: var(--color-ink); border-color: var(--color-ink); background: rgba(255, 255, 255, 0.25); }
     .hcta p { display: none; }
     .hbook, .cue { display: none; }
     .nm { font-size: 6.2vw; }
