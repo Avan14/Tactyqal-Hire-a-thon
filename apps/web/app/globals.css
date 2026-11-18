@@ -140,8 +140,13 @@
   }
   .hdr.dark { --hdr: var(--color-ink); }
   .hdr.hidden { transform: translateY(-100%); }
-  .hdr .logo { justify-self: center; display: flex; align-items: center; gap: 8px; font-family: var(--font-display); font-size: 20px; letter-spacing: 0.02em; }
-  .hdr .logo svg { width: 30px; height: 28px; }
+  /* wordmark: large, open tracking so the condensed face reads clearly */
+  .hdr .logo { justify-self: center; display: flex; align-items: center; gap: 10px; font-family: var(--font-display); font-size: clamp(24px, 2.1vw, 30px); line-height: 1; letter-spacing: 0.05em; }
+  .hdr .logo svg { width: 38px; height: 36px; flex: none; }
+  /* menu toggle: outlined pill, black border (cream while the dark menu is open) */
+  .menu-btn { display: inline-flex; align-items: center; min-height: 44px; padding: 0 20px; border: 2px solid #000; border-radius: 999px; font-weight: 700; transition: background 0.3s, color 0.3s, border-color 0.3s; }
+  .menu-btn[aria-expanded="true"] { border-color: var(--color-cream); }
+  @media (hover: hover) { .menu-btn:hover { background: #000; color: var(--color-lime); } .menu-btn[aria-expanded="true"]:hover { background: var(--color-cream); color: var(--color-ink); } }
   .hdr .c1 { justify-self: start; }
   .hdr .c2, .hdr .c4 { justify-self: center; }
   .hdr .right { justify-self: end; display: flex; align-items: center; gap: 18px; }
@@ -150,7 +155,10 @@
     .hdr .c1, .hdr .c2, .hdr .c4 { display: none; }
     .hdr .logo { justify-self: start; }
     .hdr .logo span { display: none; }
+    .hdr .logo svg { width: 34px; height: 32px; }
+    .hdr .right { gap: 10px; }
     .hdr .pill { padding: 10px 14px; font-size: 12px; min-height: 40px; }
+    .menu-btn { min-height: 40px; padding: 0 14px; }
   }
   .progress { position: fixed; left: 0; right: 0; top: 0; height: 3px; z-index: 8300; background: var(--color-lime); transform: scaleX(0); transform-origin: left; pointer-events: none; }
 
